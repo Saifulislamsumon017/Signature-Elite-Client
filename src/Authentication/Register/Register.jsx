@@ -1,15 +1,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
 import { Label } from '@/Components/ui/label';
 import useAuth from '@/hoocks/useAuth';
-
 import { Eye, EyeOff } from 'lucide-react';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { Link, useLocation, useNavigate } from 'react-router';
 import SocialLogin from '../SocialLogin/SocialLogIn';
+import ImageUploader from '@/SheardComponents/ImageUploader';
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [photoURL, setPhotoURL] = useState('');
   const { createUser, updateUserProfile } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -22,10 +23,14 @@ const Register = () => {
     const lastName = form.LastName.value.trim();
     const email = form.email.value.trim();
     const password = form.password.value;
-    const photoURL = form.photoURL.value.trim();
 
     if (!email || !password) {
       toast.error('Email and password are required');
+      return;
+    }
+
+    if (!photoURL) {
+      toast.error('Please upload a profile photo.');
       return;
     }
 
@@ -50,8 +55,7 @@ const Register = () => {
     }
 
     createUser(email, password)
-      .then(result => {
-        console.log(result);
+      .then(() => {
         updateUserProfile({
           displayName: `${firstName} ${lastName}`,
           photoURL,
@@ -59,6 +63,7 @@ const Register = () => {
           toast.success('Account created successfully! 👋');
           navigate(from || '/');
           form.reset();
+          setPhotoURL('');
         });
       })
       .catch(error => {
@@ -69,14 +74,6 @@ const Register = () => {
 
   return (
     <div className="max-w-screen-xl mx-auto flex flex-col md:flex-row h-full items-center justify-center px-4 py-10 md:py-20 gap-10">
-      {/* <div className="w-full md:w-1/2 flex justify-center items-center">
-        <Lottie
-          className="max-w-[500px] w-full h-auto"
-          animationData={signUp}
-          loop
-        />
-      </div> */}
-
       <div className="w-full md:w-1/3">
         <Card className="w-full shadow-md rounded-2xl dark:bg-gray-800 dark:border-gray-600">
           <CardHeader>
@@ -115,16 +112,8 @@ const Register = () => {
                 </div>
               </div>
 
-              <div>
-                <Label className="block mb-1 pl-2">Profile Photo URL</Label>
-                <input
-                  type="url"
-                  name="photoURL"
-                  placeholder="Profile Photo URL"
-                  className="w-full font-abel border pl-3 py-2 rounded dark:border-gray-600 dark:bg-gray-900"
-                  required
-                />
-              </div>
+              {/* Photo Uploader */}
+              <ImageUploader onUpload={setPhotoURL} />
 
               <div>
                 <Label className="block mb-1 pl-2">Email</Label>
@@ -156,7 +145,11 @@ const Register = () => {
                 </button>
               </div>
 
-              <button className="w-full text-[18px]" type="submit">
+              <button
+                className="w-full text-[18px]"
+                type="submit"
+                disabled={!photoURL}
+              >
                 Sign Up
               </button>
             </form>

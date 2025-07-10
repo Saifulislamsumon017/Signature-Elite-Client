@@ -1,4 +1,5 @@
 import useAuth from '@/hoocks/useAuth';
+import LoadingSpinner from '@/SheardComponents/LoadingSpinner';
 import React from 'react';
 import { Navigate, useLocation } from 'react-router';
 
@@ -7,7 +8,7 @@ const PrivateRoutes = ({ children }) => {
   const location = useLocation();
 
   if (loading) {
-    return;
+    return <LoadingSpinner />;
   }
 
   if (!user) {

@@ -3,6 +3,7 @@ import Register from '@/Authentication/Register/Register';
 import AuthLayout from '@/Layout/AuthLayout/AuthLayout';
 import DashboardLayout from '@/Layout/DashboardLayout/DashboardLayout';
 import MainLayout from '@/Layout/MainLayout/MainLayout';
+import ErrorPage from '@/Pages/Error/ErrorPage';
 import Home from '@/Pages/Home/Home';
 import { createBrowserRouter } from 'react-router';
 
@@ -10,6 +11,7 @@ export const Routes = createBrowserRouter([
   {
     path: '/',
     Component: MainLayout,
+    errorElement: <ErrorPage />,
     children: [
       {
         index: true,
