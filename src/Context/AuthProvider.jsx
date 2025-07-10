@@ -10,6 +10,7 @@ import {
   updateProfile,
 } from 'firebase/auth';
 import { auth } from '../../firebase.config';
+import axios from 'axios';
 
 const GoogleProvider = new GoogleAuthProvider();
 
@@ -42,13 +43,22 @@ const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const unSubscribe = onAuthStateChanged(auth, currentUser => {
+    const unsubscribe = onAuthStateChanged(auth, currentUser => {
       setUser(currentUser);
       setLoading(false);
+
+      if (currentUser) {
+        // Get JWT from server
+        axios
+          .post('http://localhost:3000/jwt', { email: currentUser.email })
+          .then(res => {
+            localStorage.setItem('access-token', res.data.token);
+          });
+      } else {
+        localStorage.removeItem('access-token');
+      }
     });
-    return () => {
-      unSubscribe();
-    };
+    return () => unsubscribe();
   }, []);
 
   const userInfo = {
