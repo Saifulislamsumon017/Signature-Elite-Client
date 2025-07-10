@@ -1,10 +1,17 @@
+import Navbar from '@/SheardComponents/Navbar';
 import React from 'react';
 import { Outlet } from 'react-router';
 
 const MainLayout = () => {
   return (
     <>
-      <Outlet />
+      <header>
+        <Navbar />
+      </header>
+      <main>
+        <Outlet />
+      </main>
+      <footer></footer>
     </>
   );
 };

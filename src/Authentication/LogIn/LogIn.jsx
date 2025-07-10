@@ -89,7 +89,10 @@ const LogIn = () => {
                 </button>
               </div>
 
-              <button className="w-full text-[18px]" type="submit">
+              <button
+                className="w-full flex gap-1 text-[18px] items-center justify-center shadow-2xl rounded-md py-1.5 border cursor-pointer"
+                type="submit"
+              >
                 Log In
               </button>
             </form>
