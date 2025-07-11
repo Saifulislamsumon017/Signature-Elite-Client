@@ -11,6 +11,8 @@ import { createBrowserRouter } from 'react-router';
 import PrivateRoutes from '../PrivateRoutes/PrivateRoutes';
 import PropertyDetailsPage from '@/Pages/AllProperties/PropertyDetailsPage';
 import WishlistPage from '@/Pages/WishListPage/WishlistPage';
+import MakeOfferPage from '@/Pages/MakeOfferPage/MakeOfferPage';
+import PropertyBoughtPage from '@/Pages/PropertyBoughtPage/PropertyBoughtPage';
 
 export const Routes = createBrowserRouter([
   {
@@ -31,6 +33,14 @@ export const Routes = createBrowserRouter([
         element: (
           <PrivateRoutes>
             <PropertyDetailsPage />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: '/make-offer/:propertyId',
+        element: (
+          <PrivateRoutes>
+            <MakeOfferPage />
           </PrivateRoutes>
         ),
       },
@@ -63,6 +73,14 @@ export const Routes = createBrowserRouter([
         element: (
           <PrivateRoutes>
             <WishlistPage />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: '/dashboard/property-bought',
+        element: (
+          <PrivateRoutes>
+            <PropertyBoughtPage />
           </PrivateRoutes>
         ),
       },
