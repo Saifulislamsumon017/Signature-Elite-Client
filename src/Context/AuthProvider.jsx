@@ -48,16 +48,23 @@ const AuthProvider = ({ children }) => {
       setLoading(false);
 
       if (currentUser) {
-        // Get JWT from server
+        // Issue JWT with email and role
         axios
-          .post('http://localhost:3000/jwt', { email: currentUser.email })
+          .post('http://localhost:3000/jwt', {
+            email: currentUser.email,
+            role: 'user', // default role for new login
+          })
           .then(res => {
             localStorage.setItem('access-token', res.data.token);
+          })
+          .catch(() => {
+            localStorage.removeItem('access-token');
           });
       } else {
         localStorage.removeItem('access-token');
       }
     });
+
     return () => unsubscribe();
   }, []);
 

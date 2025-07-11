@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
 import { Label } from '@/Components/ui/label';
-import useAuth from '@/hoocks/useAuth';
+import useAuth from '@/hooks/useAuth';
 import { Eye, EyeOff } from 'lucide-react';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';

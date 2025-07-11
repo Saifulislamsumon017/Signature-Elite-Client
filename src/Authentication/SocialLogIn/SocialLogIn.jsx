@@ -3,7 +3,7 @@ import { FcGoogle } from 'react-icons/fc';
 import { useLocation, useNavigate } from 'react-router';
 
 import toast from 'react-hot-toast';
-import useAuth from '@/hoocks/useAuth';
+import useAuth from '@/hooks/useAuth';
 
 const SocialLogin = ({ from }) => {
   const { signInGoogle } = useAuth();

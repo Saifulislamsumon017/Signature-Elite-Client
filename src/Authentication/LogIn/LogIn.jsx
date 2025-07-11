@@ -7,7 +7,7 @@ import { Link, useLocation, useNavigate } from 'react-router';
 
 import toast from 'react-hot-toast';
 import SocialLogin from '../SocialLogin/SocialLogIn';
-import useAuth from '@/hoocks/useAuth';
+import useAuth from '@/hooks/useAuth';
 
 const LogIn = () => {
   const [showPassword, setShowPassword] = useState(false);

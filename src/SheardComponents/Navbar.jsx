@@ -1,4 +1,4 @@
-import useAuth from '@/hoocks/useAuth';
+import useAuth from '@/hooks/useAuth';
 import toast from 'react-hot-toast';
 import { Link, NavLink, useNavigate } from 'react-router';
 import logImage from '../assets/Signature Elite Logo .png';

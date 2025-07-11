@@ -1,4 +1,4 @@
-import useAuth from '@/hoocks/useAuth';
+import useAuth from '@/hooks/useAuth';
 import LoadingSpinner from '@/SheardComponents/LoadingSpinner';
 import React from 'react';
 import { Navigate, useLocation } from 'react-router';

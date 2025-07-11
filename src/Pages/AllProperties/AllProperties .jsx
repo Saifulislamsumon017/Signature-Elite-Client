@@ -1,5 +1,5 @@
 import PropertyCard from '@/Components/ui/PropertyCard/PropertyCard';
-import useAxiosSecure from '@/hoocks/useAxiosSecure';
+import useAxiosSecure from '@/hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
