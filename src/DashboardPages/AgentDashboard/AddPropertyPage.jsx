@@ -2,8 +2,8 @@ import useAuth from '@/hooks/useAuth';
 import useAxiosSecure from '@/hooks/useAxiosSecure';
 import ImageUploader from '@/SheardComponents/ImageUploader';
 import React, { useState } from 'react';
-import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router';
+import Swal from 'sweetalert2';
 
 const FACILITIES_OPTIONS = [
   'Garage',
@@ -49,7 +49,11 @@ const AddPropertyPage = () => {
       !bedrooms ||
       !bathrooms
     ) {
-      toast.error('Please fill in all fields');
+      Swal.fire({
+        icon: 'error',
+        title: 'Missing Fields',
+        text: 'Please fill in all fields!',
+      });
       return;
     }
 
@@ -71,11 +75,19 @@ const AddPropertyPage = () => {
     try {
       setLoading(true);
       await axiosSecure.post('/properties', newProperty);
-      toast.success('Property added successfully!');
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Property added successfully!',
+      });
       navigate('/dashboard/my-properties');
     } catch (err) {
       console.error(err);
-      toast.error('Failed to add property');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to add property. Please try again.',
+      });
     } finally {
       setLoading(false);
     }
