@@ -47,13 +47,9 @@ const AuthProvider = ({ children }) => {
       setUser(currentUser);
       setLoading(false);
 
-      if (currentUser) {
-        // Issue JWT with email and role
+      if (currentUser?.email) {
         axios
-          .post('http://localhost:3000/jwt', {
-            email: currentUser.email,
-            role: 'user', // default role for new login
-          })
+          .post('http://localhost:3000/jwt', { email: currentUser.email })
           .then(res => {
             localStorage.setItem('access-token', res.data.token);
           })

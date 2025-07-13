@@ -37,14 +37,6 @@ const Home = () => {
     latestReviews,
   });
 
-  // if (loadingProperties || loadingReviews)
-  //   return <div className="text-center py-10">Loading...</div>;
-
-  // if (errorProperties || errorReviews)
-  //   return (
-  //     <div className="text-center py-10 text-red-600">Failed to load data.</div>
-  //   );
-
   return (
     <>
       <Banner />

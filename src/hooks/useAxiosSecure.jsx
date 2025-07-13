@@ -1,13 +1,12 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router';
+const axiosSecure = axios.create({
+  baseURL: `http://localhost:3000`,
+});
 
 const useAxiosSecure = () => {
   const navigate = useNavigate();
-
-  const axiosSecure = axios.create({
-    baseURL: 'http://localhost:3000',
-  });
 
   // Request interceptor (attach JWT token)
   axiosSecure.interceptors.request.use(config => {

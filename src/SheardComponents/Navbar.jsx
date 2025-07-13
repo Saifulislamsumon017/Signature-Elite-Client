@@ -1,7 +1,7 @@
 import useAuth from '@/hooks/useAuth';
 import toast from 'react-hot-toast';
 import { Link, NavLink, useNavigate } from 'react-router';
-import logImage from '../assets/Signature Elite Logo .png';
+import logImage from '../assets/Logo/Signature Elite Logo .png';
 
 const Navbar = () => {
   const { user, signOutUser } = useAuth();
@@ -13,9 +13,11 @@ const Navbar = () => {
       toast.success('Logged out!');
       navigate('/');
     } catch (err) {
-      toast.error('Error logging out');
+      toast.error('Error logging out', err);
     }
   };
+
+  console.log('Current User:', user);
 
   const navLinkClass = ({ isActive }) =>
     isActive ? 'text-blue-600 font-bold' : 'text-gray-700 hover:text-blue-600';
@@ -41,6 +43,7 @@ const Navbar = () => {
           <NavLink to="/dashboard" className={navLinkClass}>
             Dashboard
           </NavLink>
+
           {!user && (
             <NavLink to="/login" className="text-blue-600 font-semibold">
               Login

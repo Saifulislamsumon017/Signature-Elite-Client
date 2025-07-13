@@ -1,22 +1,24 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
 import { Label } from '@/Components/ui/label';
 import useAuth from '@/hooks/useAuth';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { Link, useLocation, useNavigate } from 'react-router';
-import SocialLogin from '../SocialLogin/SocialLogIn';
 import ImageUploader from '@/SheardComponents/ImageUploader';
+import useAxios from '@/hooks/useAxios';
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [photoURL, setPhotoURL] = useState('');
+  const [loading, setLoading] = useState(false);
+  const axiosInstance = useAxios();
   const { createUser, updateUserProfile } = useAuth();
-  const location = useLocation();
   const navigate = useNavigate();
+  const location = useLocation();
   const from = location.state || '/';
 
-  const handleSignUp = e => {
+  const handleSignUp = async e => {
     e.preventDefault();
     const form = e.target;
     const firstName = form.FirstName.value.trim();
@@ -24,52 +26,64 @@ const Register = () => {
     const email = form.email.value.trim();
     const password = form.password.value;
 
+    // Validation
     if (!email || !password) {
       toast.error('Email and password are required');
       return;
     }
-
     if (!photoURL) {
       toast.error('Please upload a profile photo.');
       return;
     }
-
     if (password.length < 6) {
       toast.error('Password must be at least 6 characters long.');
       return;
     }
-
     if (!/[A-Z]/.test(password)) {
       toast.error('Password must include at least one uppercase letter.');
       return;
     }
-
     if (!/[a-z]/.test(password)) {
       toast.error('Password must include at least one lowercase letter.');
       return;
     }
 
-    if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>?~`]/.test(password)) {
-      toast.error('Password must include at least one special character.');
-      return;
-    }
+    try {
+      setLoading(true);
 
-    createUser(email, password)
-      .then(() => {
-        updateUserProfile({
-          displayName: `${firstName} ${lastName}`,
-          photoURL,
-        }).then(() => {
-          toast.success('Account created successfully! 👋');
-          navigate(from || '/');
-          form.reset();
-          setPhotoURL('');
-        });
-      })
-      .catch(error => {
-        console.error(error);
-        toast.error(error.message || 'Sign up failed');
+      // 1️⃣ Create Firebase Auth user
+      const result = await createUser(email, password);
+      const user = result.user;
+
+      // 2️⃣ Save user info to MongoDB
+      const userInfo = {
+        uid: user.uid,
+        name: `${firstName} ${lastName}`,
+        email,
+        photoURL,
+        role: 'user', // default role
+        created_at: new Date().toISOString(),
+        last_log_in: new Date().toISOString(),
+      };
+
+      // 3️⃣ Update Firebase profile
+
+      await axiosInstance.post('/users', userInfo);
+      await updateUserProfile({
+        displayName: `${firstName} ${lastName}`,
+        photoURL,
       });
+
+      toast.success('Account created successfully! 👋');
+      navigate(from || '/');
+      form.reset();
+      setPhotoURL('');
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.message || 'Sign up failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -81,7 +95,7 @@ const Register = () => {
               <h1 className="text-center text-2xl font-bold">
                 Create An Account
               </h1>
-              <p className="text-center font-light font-rancho mt-2 dark:text-gray-300">
+              <p className="text-center font-light mt-2 dark:text-gray-300">
                 Enter your details below to create your account
               </p>
             </CardTitle>
@@ -96,7 +110,7 @@ const Register = () => {
                     type="text"
                     name="FirstName"
                     placeholder="First Name"
-                    className="w-full font-abel border pl-3 py-2 rounded dark:border-gray-600 dark:bg-gray-900"
+                    className="w-full border pl-3 py-2 rounded dark:border-gray-600 dark:bg-gray-900"
                     required
                   />
                 </div>
@@ -106,13 +120,12 @@ const Register = () => {
                     type="text"
                     name="LastName"
                     placeholder="Last Name"
-                    className="w-full font-abel border pl-3 py-2 rounded dark:border-gray-600 dark:bg-gray-900"
+                    className="w-full border pl-3 py-2 rounded dark:border-gray-600 dark:bg-gray-900"
                     required
                   />
                 </div>
               </div>
 
-              {/* Photo Uploader */}
               <ImageUploader onUpload={setPhotoURL} />
 
               <div>
@@ -121,7 +134,7 @@ const Register = () => {
                   type="email"
                   name="email"
                   placeholder="Enter your email"
-                  className="w-full font-abel border pl-3 py-2 rounded dark:border-gray-600 dark:bg-gray-900"
+                  className="w-full border pl-3 py-2 rounded dark:border-gray-600 dark:bg-gray-900"
                   required
                 />
               </div>
@@ -132,7 +145,7 @@ const Register = () => {
                   type={showPassword ? 'text' : 'password'}
                   name="password"
                   placeholder="Create a password"
-                  className="w-full font-abel border pl-3 py-2 rounded dark:border-gray-600 dark:bg-gray-900"
+                  className="w-full border pl-3 py-2 rounded dark:border-gray-600 dark:bg-gray-900"
                   required
                 />
                 <button
@@ -146,17 +159,22 @@ const Register = () => {
               </div>
 
               <button
-                className="w-full flex gap-1 text-[18px] items-center justify-center shadow-2xl rounded-md py-1.5 border cursor-pointer"
                 type="submit"
-                disabled={!photoURL}
+                disabled={loading || !photoURL}
+                className="w-full flex gap-2 items-center justify-center shadow-2xl rounded-md py-1.5 border cursor-pointer bg-lime-500 text-white hover:bg-lime-600"
               >
-                Sign Up
+                {loading ? (
+                  <span className="flex items-center gap-2">
+                    <Loader2 className="animate-spin" size={16} />
+                    Creating...
+                  </span>
+                ) : (
+                  'Sign Up'
+                )}
               </button>
             </form>
 
-            <SocialLogin from={from} />
-
-            <p className="text-center font-light font-abel pt-2 dark:text-gray-300">
+            <p className="text-center font-light pt-2 dark:text-gray-300">
               Already have an account?{' '}
               <Link
                 to="/login"

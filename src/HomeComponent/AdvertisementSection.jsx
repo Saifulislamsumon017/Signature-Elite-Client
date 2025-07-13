@@ -1,48 +1,51 @@
-import React from 'react';
-import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
-import { Link } from 'react-router';
+import { useNavigate } from 'react-router';
 
-const AdvertisementSection = ({ properties }) => (
-  <div className="max-w-7xl mx-auto  px-6 py-10">
-    <h2 className="text-3xl font-semibold mb-6">Featured Advertisements</h2>
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-      {properties.length === 0 && <p>No advertised properties found.</p>}
-      {properties.map(property => (
-        <div
-          key={property._id}
-          className="border rounded-lg shadow hover:shadow-lg transition duration-200"
-        >
-          <img
-            src={property.image}
-            alt={property.title}
-            className="w-full h-48 object-cover rounded-t-lg"
-          />
-          <div className="p-4">
-            <h3 className="font-bold text-lg">{property.title}</h3>
-            <p className="text-gray-600">{property.location}</p>
-            <p className="mt-1 text-indigo-600 font-semibold">
-              ${property.minPrice.toLocaleString()} - $
+const AdvertisementSection = ({ properties }) => {
+  const navigate = useNavigate();
+
+  if (!properties.length) return <p>No advertised properties available.</p>;
+
+  return (
+    <section className="advertisement-section p-5">
+      <h2 className="text-2xl font-semibold mb-5">Featured Properties</h2>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
+        {properties.slice(0, 4).map(property => (
+          <div
+            key={property._id}
+            className="card border rounded shadow p-3 cursor-pointer"
+            onClick={() => navigate(`/property/${property._id}`)}
+          >
+            <img
+              src={property.image}
+              alt={property.title}
+              className="w-full h-40 object-cover rounded"
+            />
+            <h3 className="mt-2 font-bold">{property.title}</h3>
+            <p>{property.location}</p>
+            <p>
+              Price: ${property.minPrice.toLocaleString()} - $
               {property.maxPrice.toLocaleString()}
             </p>
-            <p className="flex items-center mt-2">
-              {property.verificationStatus === 'verified' ? (
-                <FaCheckCircle className="text-green-500 mr-1" />
-              ) : (
-                <FaTimesCircle className="text-red-500 mr-1" />
-              )}
-              <span className="capitalize">{property.verificationStatus}</span>
+            <p>
+              Status:{' '}
+              <span className="text-green-600 font-semibold">
+                {property.verificationStatus}
+              </span>
             </p>
-            <Link
-              to={`/property/${property._id}`}
-              className="inline-block mt-4 px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+            <button
+              onClick={e => {
+                e.stopPropagation();
+                navigate(`/property/${property._id}`);
+              }}
+              className="mt-2 bg-blue-500 text-white px-3 py-1 rounded"
             >
               Details
-            </Link>
+            </button>
           </div>
-        </div>
-      ))}
-    </div>
-  </div>
-);
+        ))}
+      </div>
+    </section>
+  );
+};
 
 export default AdvertisementSection;

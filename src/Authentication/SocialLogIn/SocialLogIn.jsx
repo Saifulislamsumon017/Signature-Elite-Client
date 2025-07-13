@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router';
 
 import toast from 'react-hot-toast';
 import useAuth from '@/hooks/useAuth';
+import useAxios from '@/hooks/useAxios';
 
 const SocialLogin = ({ from }) => {
   const { signInGoogle } = useAuth();
@@ -11,21 +12,35 @@ const SocialLogin = ({ from }) => {
   const navigate = useNavigate();
   // const from = location.state?.from?.pathname || '/';
   const isSignUp = location.pathname === '/register';
+  const axiosInstance = useAxios();
 
   const handleSignInGoogle = () => {
     signInGoogle()
-      .then(result => {
+      .then(async result => {
         const user = result.user;
 
+        // Fallback for name
         const displayName =
           user.displayName || user.email?.split('@')[0] || 'User';
-        const firstName = displayName.split(' ')[0];
 
-        if (isSignUp) {
-          toast.success('Signed up with Google! 🎉');
-        } else {
-          toast.success(`Logged in with Google! Welcome back, ${firstName} 👋`);
-        }
+        // Build userInfo just like your style
+        const userInfo = {
+          uid: user.uid,
+          name: displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+          role: 'user', // default role
+          created_at: new Date().toISOString(),
+          last_log_in: new Date().toISOString(),
+        };
+
+        // Save in DB
+        await axiosInstance.post('/users', userInfo);
+
+        // Success toast
+        toast.success(
+          `Logged in with Google! Welcome, ${displayName.split(' ')[0]} 👋`
+        );
         navigate(from || '/');
       })
       .catch(error => {

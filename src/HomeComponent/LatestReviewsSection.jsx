@@ -1,37 +1,26 @@
-import React from 'react';
+const LatestReviewsSection = ({ reviews }) => {
+  if (!reviews.length) return <p>No recent reviews.</p>;
 
-const LatestReviewsSection = ({ reviews }) => (
-  <div className="bg-gray-50 py-10">
-    <div className="max-w-7xl mx-auto  px-6">
-      <h2 className="text-3xl font-semibold mb-6">Latest User Reviews</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {reviews.length === 0 && <p>No reviews found.</p>}
+  return (
+    <section className="latest-reviews-section p-5 bg-gray-100 rounded">
+      <h2 className="text-2xl font-semibold mb-5">Latest User Reviews</h2>
+      <div className="space-y-4">
         {reviews.map(review => (
           <div
-            key={review._id}
-            className="border rounded-lg shadow bg-white p-4 flex flex-col"
+            key={review._id || review.createdAt}
+            className="review-card border p-3 rounded shadow"
           >
-            <div className="flex items-center mb-3 space-x-3">
-              <img
-                src={
-                  review.reviewerImage || 'https://i.ibb.co/7vDLJFb/user.png'
-                }
-                alt={review.reviewerName}
-                className="w-12 h-12 rounded-full object-cover"
-              />
-              <div>
-                <h4 className="font-semibold">{review.reviewerName}</h4>
-                <p className="text-gray-500 text-sm">{review.propertyTitle}</p>
-              </div>
-            </div>
-            <p className="text-gray-700 flex-grow">
-              {review.reviewDescription}
+            <p className="font-semibold">{review.reviewerName}</p>
+            <p className="italic">{review.comment}</p>
+            <p className="text-sm text-gray-600">Rating: {review.rating} / 5</p>
+            <p className="text-sm text-gray-600">
+              Property: {review.propertyTitle || 'N/A'}
             </p>
           </div>
         ))}
       </div>
-    </div>
-  </div>
-);
+    </section>
+  );
+};
 
 export default LatestReviewsSection;
