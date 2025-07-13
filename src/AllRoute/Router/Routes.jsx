@@ -21,6 +21,7 @@ import MyPropertiesPage from '@/DashboardPages/AgentDashboard/MyPropertiesPage';
 import PropertyUpdatePage from '@/DashboardPages/AgentDashboard/PropertyUpdatePage';
 import MySoldPropertiesPage from '@/DashboardPages/AgentDashboard/MySoldPropertiesPage';
 import RequestedOffersPage from '@/DashboardPages/AgentDashboard/RequestedOffersPage';
+import AgentRequestsPage from '@/DashboardPages/AgentDashboard/AgentRequestsPage';
 export const Routes = createBrowserRouter([
   {
     path: '/',
@@ -160,6 +161,15 @@ export const Routes = createBrowserRouter([
         element: (
           <PrivateRoutes>
             <RequestedOffersPage />
+          </PrivateRoutes>
+        ),
+      },
+
+      {
+        path: 'agent-requests',
+        element: (
+          <PrivateRoutes>
+            <AgentRequestsPage />
           </PrivateRoutes>
         ),
       },
