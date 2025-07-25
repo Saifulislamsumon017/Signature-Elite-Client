@@ -1,79 +1,119 @@
-import useAuth from '@/hooks/useAuth';
-import useAxiosSecure from '@/hooks/useAxiosSecure';
+import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import useAxiosSecure from '@/hooks/useAxiosSecure';
+import useAuth from '@/hooks/useAuth';
 import toast from 'react-hot-toast';
-import { Link } from 'react-router';
+import { useNavigate } from 'react-router';
 
 const WishlistPage = () => {
   const axiosSecure = useAxiosSecure();
-  const queryClient = useQueryClient();
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
+  // Fetch wishlist for the current user
   const { data: wishlist = [], isLoading } = useQuery({
     queryKey: ['wishlist', user?.email],
     queryFn: async () => {
       const res = await axiosSecure.get(`/wishlist?userEmail=${user.email}`);
       return res.data;
     },
+    enabled: !!user?.email,
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: async id => {
-      return await axiosSecure.delete(`/wishlist/${id}`);
-    },
+  // Mutation to remove item from wishlist
+  const removeMutation = useMutation({
+    mutationFn: id =>
+      axiosSecure.delete(`/wishlist/${id}`, {
+        params: { userEmail: user.email },
+      }),
     onSuccess: () => {
       toast.success('Removed from wishlist');
       queryClient.invalidateQueries(['wishlist', user?.email]);
     },
+    onError: () => {
+      toast.error('Failed to remove wishlist item');
+    },
   });
 
-  if (isLoading) return <p className="p-4">Loading wishlist...</p>;
+  // Handler: remove from wishlist
+  const handleRemove = id => {
+    removeMutation.mutate(id);
+  };
+
+  // Handler: go to make offer page
+  const handleMakeOffer = item => {
+    navigate('/make-offer', { state: { property: item } });
+  };
+
+  if (isLoading) {
+    return (
+      <p className="text-center mt-10 font-semibold text-lg">
+        Loading wishlist...
+      </p>
+    );
+  }
 
   return (
-    <section className="max-w-6xl mx-auto px-4 py-8">
-      <h2 className="text-2xl font-bold mb-6">My Wishlist</h2>
+    <div className="max-w-6xl mx-auto px-4 py-10">
+      <h1 className="text-4xl font-bold mb-6 text-center">My Wishlist</h1>
 
-      {wishlist.length === 0 && <p>You have no properties in your wishlist.</p>}
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {wishlist.map(item => (
-          <div
-            key={item._id}
-            className="border rounded-lg p-4 shadow bg-white flex gap-4"
-          >
-            <img
-              src={item.image}
-              alt={item.propertyTitle}
-              className="w-40 h-32 object-cover rounded"
-            />
-            <div className="flex-1">
-              <h3 className="text-lg font-semibold">{item.propertyTitle}</h3>
-              <p className="text-gray-600 text-sm">Location: {item.location}</p>
-              <p className="text-sm">Agent: {item.agentName}</p>
-              <p className="text-sm">Verification: {item.verificationStatus}</p>
-              <p className="text-green-600 font-medium mt-1">
-                Price: ${item.minPrice} - ${item.maxPrice}
-              </p>
-
-              <div className="mt-3 flex gap-2">
-                <Link
-                  to={`/make-offer/${item.propertyId}`}
-                  className="bg-blue-600 text-white px-3 py-1 rounded text-sm"
-                >
-                  Make an Offer
-                </Link>
-                <button
-                  onClick={() => deleteMutation.mutate(item._id)}
-                  className="bg-red-500 text-white px-3 py-1 rounded text-sm"
-                >
-                  Remove
-                </button>
+      {wishlist.length === 0 ? (
+        <p className="text-center text-gray-600">
+          No properties in your wishlist.
+        </p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {wishlist.map(item => (
+            <div
+              key={item._id}
+              className="bg-white shadow rounded-lg overflow-hidden"
+            >
+              <img
+                src={item.image}
+                alt={item.title}
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-4">
+                <h2 className="text-xl font-semibold mb-1">{item.title}</h2>
+                <p className="text-gray-600 text-sm mb-1">{item.location}</p>
+                <p className="text-sm mb-1">
+                  Price: ${item.minPrice?.toLocaleString()} - $
+                  {item.maxPrice?.toLocaleString()}
+                </p>
+                <p className="text-sm mb-2">
+                  Agent: <span className="font-semibold">{item.agentName}</span>
+                </p>
+                <div className="flex items-center gap-2 mb-4">
+                  <img
+                    src={item.agentImage}
+                    alt={item.agentName}
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                  <span className="text-xs text-gray-500">
+                    {item.verificationStatus}
+                  </span>
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => handleMakeOffer(item)}
+                    className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded"
+                  >
+                    Make an Offer
+                  </button>
+                  <button
+                    onClick={() => handleRemove(item._id)}
+                    className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded"
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
-    </section>
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
 

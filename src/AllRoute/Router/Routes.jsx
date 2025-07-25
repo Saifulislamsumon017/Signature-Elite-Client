@@ -22,6 +22,14 @@ import PropertyUpdatePage from '@/DashboardPages/AgentDashboard/PropertyUpdatePa
 import MySoldPropertiesPage from '@/DashboardPages/AgentDashboard/MySoldPropertiesPage';
 import RequestedOffersPage from '@/DashboardPages/AgentDashboard/RequestedOffersPage';
 import AgentRequestsPage from '@/DashboardPages/AgentDashboard/AgentRequestsPage';
+import AdminProfilePage from '@/DashboardPages/AdminDashboard/AdminProfilePage';
+import ManagePropertiesPage from '@/DashboardPages/AdminDashboard/ManagePropertiesPage';
+import ManageUsersPage from '@/DashboardPages/AdminDashboard/ManageUsersPage';
+import ManageReviewsPage from '@/DashboardPages/AdminDashboard/ManageReviewsPage';
+import AdvertisePropertyPage from '@/DashboardPages/AdminDashboard/AdvertisePropertyPage';
+import MyOffersPage from '@/DashboardPages/UserDashboard/MyOffersPage';
+import AgentOffersPage from '@/DashboardPages/AgentDashboard/AgentOffersPage';
+
 export const Routes = createBrowserRouter([
   {
     path: '/',
@@ -37,15 +45,16 @@ export const Routes = createBrowserRouter([
         element: <AllProperties />,
       },
       {
-        path: 'property/:id',
+        path: '/property/:id',
         element: (
-          <PrivateRoutes>
-            <PropertyDetailsPage />
-          </PrivateRoutes>
+          // <PrivateRoutes>
+          <PropertyDetailsPage />
+          // </PrivateRoutes>
         ),
       },
+
       {
-        path: 'make-offer/:propertyId',
+        path: '/make-offer',
         element: (
           <PrivateRoutes>
             <MakeOfferPage />
@@ -109,6 +118,14 @@ export const Routes = createBrowserRouter([
         ),
       },
       {
+        path: 'make-offer/:id',
+        element: (
+          <PrivateRoutes>
+            <MyOffersPage />
+          </PrivateRoutes>
+        ),
+      },
+      {
         path: 'payment/:offerId',
         element: (
           <PrivateRoutes>
@@ -164,12 +181,58 @@ export const Routes = createBrowserRouter([
           </PrivateRoutes>
         ),
       },
+      {
+        path: 'agent-offers',
+        element: <AgentOffersPage />,
+        // Add private/role-based route guards as needed
+      },
 
       {
         path: 'agent-requests',
         element: (
           <PrivateRoutes>
             <AgentRequestsPage />
+          </PrivateRoutes>
+        ),
+      },
+
+      {
+        path: 'admin-profile',
+        element: (
+          <PrivateRoutes>
+            <AdminProfilePage />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: 'manage-properties',
+        element: (
+          <PrivateRoutes>
+            <ManagePropertiesPage />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: 'manage-users',
+        element: (
+          <PrivateRoutes>
+            <ManageUsersPage />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: 'manage-reviews',
+        element: (
+          <PrivateRoutes>
+            <ManageReviewsPage />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: 'advertise-property',
+        element: (
+          <PrivateRoutes>
+            <AdvertisePropertyPage />
           </PrivateRoutes>
         ),
       },

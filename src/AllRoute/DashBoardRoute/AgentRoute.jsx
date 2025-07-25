@@ -2,11 +2,12 @@ import useAuth from '@/hooks/useAuth';
 import useUserRole from '@/hooks/useUserRole';
 import LoadingSpinner from '@/SheardComponents/LoadingSpinner';
 import React from 'react';
-import { Navigate } from 'react-router';
+import { Navigate, useLocation } from 'react-router';
 
 const AgentRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  const { role, roleLoading } = useUserRole();
+  const [role, roleLoading] = useUserRole();
+  const location = useLocation();
 
   if (loading || roleLoading) {
     return <LoadingSpinner />;
@@ -14,7 +15,7 @@ const AgentRoute = ({ children }) => {
 
   if (!user || role !== 'agent') {
     return (
-      <Navigate state={{ from: location.pathname }} to="/forbidden"></Navigate>
+      <Navigate state={{ from: location.pathname }} to="/forbidden" replace />
     );
   }
 

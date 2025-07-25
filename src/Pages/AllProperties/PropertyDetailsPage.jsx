@@ -1,159 +1,236 @@
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import useAxiosSecure from '@/hooks/useAxiosSecure';
-import { useState } from 'react';
-import toast from 'react-hot-toast';
-import { useParams } from 'react-router';
 import useAuth from '@/hooks/useAuth';
+import toast from 'react-hot-toast';
+import StarRating from '@/Components/ui/StarRating';
+import { useNavigate, useParams } from 'react-router';
 
 const PropertyDetailsPage = () => {
   const { id } = useParams();
   const axiosSecure = useAxiosSecure();
-  const queryClient = useQueryClient();
   const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
-  const [reviewText, setReviewText] = useState('');
-  const [showReviewBox, setShowReviewBox] = useState(false);
-
-  // 🔹 Fetch property by ID
+  // Fetch property details
   const { data: property, isLoading } = useQuery({
     queryKey: ['property', id],
     queryFn: async () => {
       const res = await axiosSecure.get(`/property/${id}`);
       return res.data;
     },
+    enabled: !!id,
   });
 
-  // 🔹 Fetch reviews
+  // Fetch reviews
   const { data: reviews = [] } = useQuery({
     queryKey: ['reviews', id],
     queryFn: async () => {
       const res = await axiosSecure.get(`/reviews?propertyId=${id}`);
       return res.data;
     },
+    enabled: !!id,
   });
 
-  // 🔹 Wishlist add
+  // Review modal state
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState('');
+
+  // Add to wishlist
   const wishlistMutation = useMutation({
-    mutationFn: async () => {
-      const item = {
-        userEmail: user?.email,
-        propertyId: id,
-        propertyTitle: property.title,
-        image: property.image,
+    mutationFn: wishlistItem => axiosSecure.post('/wishlist', wishlistItem),
+  });
+
+  // Add review
+  const reviewMutation = useMutation({
+    mutationFn: newReview => axiosSecure.post('/reviews', newReview),
+    onSuccess: () => {
+      toast.success('Review added');
+      queryClient.invalidateQueries(['reviews', id]);
+      setShowReviewModal(false);
+      setRating(0);
+      setComment('');
+    },
+    onError: () => {
+      toast.error('Failed to add review');
+    },
+  });
+
+  if (isLoading) {
+    return (
+      <p className="text-center mt-10 font-semibold text-lg">
+        Loading property...
+      </p>
+    );
+  }
+
+  // Handle add to wishlist
+  const handleAddToWishlist = () => {
+    if (!user?.email) {
+      toast.error('Please login to add to wishlist');
+      return;
+    }
+
+    wishlistMutation.mutate(
+      {
+        userEmail: user.email,
+        propertyId: property._id,
+        title: property.title,
         location: property.location,
+        image: property.image,
         agentName: property.agentName,
+        agentImage: property.agentImage,
         verificationStatus: property.verificationStatus,
         minPrice: property.minPrice,
         maxPrice: property.maxPrice,
-      };
-      return await axiosSecure.post('/wishlist', item);
-    },
-    onSuccess: () => {
-      toast.success('Added to wishlist');
-    },
-    onError: () => {
-      toast.error('Could not add to wishlist');
-    },
-  });
+      },
+      {
+        onSuccess: () => {
+          toast.success('Added to wishlist');
+          navigate('/dashboard/wishlist'); // ✅ redirect to wishlist
+        },
+        onError: () => {
+          toast.error('Failed to add to wishlist');
+        },
+      }
+    );
+  };
 
-  // 🔹 Add review
-  const reviewMutation = useMutation({
-    mutationFn: async () => {
-      return await axiosSecure.post('/reviews', {
-        propertyId: id,
-        userEmail: user?.email,
-        userName: user?.displayName,
-        userImage: user?.photoURL,
-        review: reviewText,
-      });
-    },
-    onSuccess: () => {
-      toast.success('Review submitted');
-      setReviewText('');
-      setShowReviewBox(false);
-      queryClient.invalidateQueries(['reviews', id]);
-    },
-  });
-
-  if (isLoading) return <p>Loading property details...</p>;
+  // Handle submit review
+  const handleSubmitReview = e => {
+    e.preventDefault();
+    if (!user?.email) {
+      toast.error('Please login to submit a review');
+      return;
+    }
+    if (rating === 0) {
+      toast.error('Please provide a rating');
+      return;
+    }
+    reviewMutation.mutate({
+      propertyId: property._id,
+      userEmail: user.email,
+      userName: user.displayName,
+      userImage: user.photoURL,
+      rating,
+      comment,
+      createdAt: new Date(),
+    });
+  };
 
   return (
-    <section className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-5xl mx-auto px-4 py-10">
+      <h1 className="text-4xl font-bold mb-4">{property.title}</h1>
       <img
         src={property.image}
         alt={property.title}
-        className="w-full h-72 object-cover rounded-lg mb-6"
+        className="w-full h-72 object-cover rounded-md mb-6"
       />
-      <h1 className="text-3xl font-bold mb-2">{property.title}</h1>
-      <p className="text-gray-600 mb-1">{property.description}</p>
-      <p className="text-sm text-gray-500 mb-1">
-        Location: {property.location}
+      <p className="mb-4">{property.description}</p>
+      <p className="font-semibold mb-1">
+        Price Range: ${property.minPrice?.toLocaleString() ?? 'N/A'} - $
+        {property.maxPrice?.toLocaleString() ?? 'N/A'}
       </p>
-      <p className="text-sm text-gray-500 mb-1">
-        Agent: {property.agentName} | Verified: {property.verificationStatus}
-      </p>
-      <p className="text-green-600 font-bold mb-4">
-        Price: ${property.minPrice} - ${property.maxPrice}
+      <p className="mb-4">
+        Agent: <span className="font-semibold">{property.agentName}</span>
       </p>
 
       <button
-        onClick={() => wishlistMutation.mutate()}
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        onClick={handleAddToWishlist}
+        disabled={wishlistMutation.isLoading}
+        className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 transition"
       >
-        Add to Wishlist
+        {wishlistMutation.isLoading ? 'Adding...' : 'Add to Wishlist'}
       </button>
 
-      {/* 🔹 Reviews */}
-      <div className="mt-10">
-        <h2 className="text-xl font-semibold mb-3">User Reviews</h2>
-        {reviews.length === 0 && <p>No reviews yet.</p>}
-        {reviews.map(r => (
-          <div
-            key={r._id}
-            className="border p-3 rounded mb-3 bg-gray-50 shadow-sm"
-          >
-            <p className="font-medium">{r.userName}</p>
-            <p className="text-sm text-gray-600">{r.review}</p>
-          </div>
-        ))}
+      <div className="mt-12">
+        <h2 className="text-2xl font-semibold mb-4">Reviews</h2>
+        {reviews.length === 0 && <p>No reviews yet. Be the first to review!</p>}
 
-        {/* Add review */}
-        {!showReviewBox && (
-          <button
-            className="mt-4 bg-green-600 text-white px-4 py-2 rounded"
-            onClick={() => setShowReviewBox(true)}
-          >
-            Add a Review
-          </button>
-        )}
-
-        {showReviewBox && (
-          <div className="mt-4">
-            <textarea
-              value={reviewText}
-              onChange={e => setReviewText(e.target.value)}
-              rows="3"
-              className="w-full border p-2 rounded"
-              placeholder="Write your review..."
-            />
-            <div className="flex gap-2 mt-2">
-              <button
-                onClick={() => reviewMutation.mutate()}
-                className="bg-blue-500 text-white px-4 py-1 rounded"
-              >
-                Submit
-              </button>
-              <button
-                onClick={() => setShowReviewBox(false)}
-                className="text-gray-600 px-4 py-1"
-              >
-                Cancel
-              </button>
+        <div className="space-y-6">
+          {reviews.map(review => (
+            <div
+              key={review._id}
+              className="flex items-start space-x-4 border-b border-gray-200 pb-4"
+            >
+              <img
+                src={review.userImage}
+                alt={review.userName}
+                className="w-12 h-12 rounded-full object-cover"
+              />
+              <div>
+                <p className="font-semibold">{review.userName}</p>
+                <StarRating rating={review.rating} />
+                <p className="italic mt-1">"{review.comment}"</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  {new Date(review.createdAt).toLocaleString()}
+                </p>
+              </div>
             </div>
+          ))}
+        </div>
+
+        <button
+          onClick={() => setShowReviewModal(true)}
+          className="mt-6 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition"
+        >
+          Add a Review
+        </button>
+
+        {showReviewModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <form
+              onSubmit={handleSubmitReview}
+              className="bg-white rounded p-6 w-full max-w-md shadow-lg"
+            >
+              <h3 className="text-xl font-semibold mb-4">Add Your Review</h3>
+
+              <label className="block mb-2 font-semibold">Rating</label>
+              <select
+                value={rating}
+                onChange={e => setRating(Number(e.target.value))}
+                className="w-full mb-4 border border-gray-300 rounded px-3 py-2 focus:outline-indigo-500"
+              >
+                <option value={0}>Select rating</option>
+                {[1, 2, 3, 4, 5].map(star => (
+                  <option key={star} value={star}>
+                    {star}
+                  </option>
+                ))}
+              </select>
+
+              <label className="block mb-2 font-semibold">Comment</label>
+              <textarea
+                value={comment}
+                onChange={e => setComment(e.target.value)}
+                rows={4}
+                className="w-full mb-4 border border-gray-300 rounded px-3 py-2 focus:outline-indigo-500"
+                required
+              ></textarea>
+
+              <div className="flex justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={() => setShowReviewModal(false)}
+                  className="px-4 py-2 rounded border border-gray-400 hover:bg-gray-100"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={reviewMutation.isLoading}
+                  className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                >
+                  {reviewMutation.isLoading ? 'Submitting...' : 'Submit'}
+                </button>
+              </div>
+            </form>
           </div>
         )}
       </div>
-    </section>
+    </div>
   );
 };
 

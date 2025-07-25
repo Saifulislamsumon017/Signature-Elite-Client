@@ -5,21 +5,19 @@ import PropertyCard from '@/Components/ui/PropertyCard/PropertyCard';
 
 const AllProperties = () => {
   const axiosSecure = useAxiosSecure();
-
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('');
 
   const {
     data: properties = [],
     isLoading,
-    isError,
     refetch,
   } = useQuery({
-    queryKey: ['all-properties', search, sort],
+    queryKey: ['properties', search, sort],
     queryFn: async () => {
-      const res = await axiosSecure.get('/all-properties', {
-        params: { search, sort },
-      });
+      const res = await axiosSecure.get(
+        `/all-properties?search=${search}&sort=${sort}`
+      );
       return res.data;
     },
   });
@@ -30,48 +28,52 @@ const AllProperties = () => {
   };
 
   return (
-    <section className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">All Verified Properties</h1>
+    <div className="px-4 md:px-10 py-6 space-y-6">
+      <h2 className="text-3xl font-bold">All Verified Properties</h2>
 
-      {/* Search & Sort Controls */}
-      <form onSubmit={handleSearch} className="flex gap-4 mb-6">
+      {/* 🔍 Search & Sort Controls */}
+      <form
+        onSubmit={handleSearch}
+        className="flex flex-col md:flex-row gap-4 md:items-center"
+      >
         <input
           type="text"
           placeholder="Search by location"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="border p-2 rounded w-full max-w-xs"
+          className="border p-2 rounded w-full md:w-60"
         />
-
         <select
           value={sort}
-          onChange={e => setSort(e.target.value)}
-          className="border p-2 rounded"
+          onChange={e => {
+            setSort(e.target.value);
+            refetch();
+          }}
+          className="border p-2 rounded w-full md:w-40"
         >
           <option value="">Sort By Price</option>
-          <option value="asc">Low to High</option>
-          <option value="desc">High to Low</option>
+          <option value="asc">Low → High</option>
+          <option value="desc">High → Low</option>
         </select>
-
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
         >
-          Apply
+          Search
         </button>
       </form>
 
-      {/* Loading / Error */}
-      {isLoading && <p>Loading properties...</p>}
-      {isError && <p>Failed to load properties. Try again.</p>}
-
-      {/* Properties Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {properties.map(property => (
-          <PropertyCard key={property._id} property={property} />
-        ))}
-      </div>
-    </section>
+      {/* 🏘️ Property Cards */}
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {properties.map(property => (
+            <PropertyCard key={property._id} property={property} />
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
 

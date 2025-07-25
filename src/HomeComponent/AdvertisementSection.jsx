@@ -1,50 +1,28 @@
-import { useNavigate } from 'react-router';
+import PropertyCard from '@/Components/ui/PropertyCard/PropertyCard';
+import React from 'react';
 
-const AdvertisementSection = ({ properties }) => {
-  const navigate = useNavigate();
-
-  if (!properties.length) return <p>No advertised properties available.</p>;
+const AdvertisementSection = ({ properties = [] }) => {
+  if (properties.length === 0) {
+    return (
+      <p className="text-center py-10">No advertised properties available.</p>
+    );
+  }
 
   return (
-    <section className="advertisement-section p-5">
-      <h2 className="text-2xl font-semibold mb-5">Featured Properties</h2>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
-        {properties.slice(0, 4).map(property => (
-          <div
-            key={property._id}
-            className="card border rounded shadow p-3 cursor-pointer"
-            onClick={() => navigate(`/property/${property._id}`)}
-          >
-            <img
-              src={property.image}
-              alt={property.title}
-              className="w-full h-40 object-cover rounded"
-            />
-            <h3 className="mt-2 font-bold">{property.title}</h3>
-            <p>{property.location}</p>
-            <p>
-              Price: ${property.minPrice.toLocaleString()} - $
-              {property.maxPrice.toLocaleString()}
-            </p>
-            <p>
-              Status:{' '}
-              <span className="text-green-600 font-semibold">
-                {property.verificationStatus}
-              </span>
-            </p>
-            <button
-              onClick={e => {
-                e.stopPropagation();
-                navigate(`/property/${property._id}`);
-              }}
-              className="mt-2 bg-blue-500 text-white px-3 py-1 rounded"
-            >
-              Details
-            </button>
-          </div>
-        ))}
+    <div className="max-w-7xl mx-auto px-4 py-12">
+      <h2 className="text-3xl font-bold text-center mb-6">
+        Advertised Properties
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {properties.length === 0 ? (
+          <p className="col-span-full text-center">No properties found.</p>
+        ) : (
+          properties.map(property => (
+            <PropertyCard key={property._id} property={property} />
+          ))
+        )}
       </div>
-    </section>
+    </div>
   );
 };
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import Sidebar from '@/DashboardPages/Sidber/Sidber';
 import { Outlet } from 'react-router';
+import { Toaster } from 'react-hot-toast';
 
 const DashboardLayout = () => {
   return (
@@ -12,6 +13,7 @@ const DashboardLayout = () => {
         <div className="p-5">
           {/* Outlet for dynamic contents */}
           <Outlet />
+          <Toaster />
         </div>
       </div>
     </div>
