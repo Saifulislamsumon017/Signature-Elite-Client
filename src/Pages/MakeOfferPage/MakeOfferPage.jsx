@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
-import useAxiosSecure from '@/hooks/useAxiosSecure';
 import { useLocation, useNavigate } from 'react-router';
+import useAxiosSecure from '@/hooks/useAxiosSecure';
+import useAuth from '@/hooks/useAuth';
 
 const MakeOfferPage = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
   const axiosSecure = useAxiosSecure();
+  const { user } = useAuth();
 
   const property = state?.property;
   const [offer, setOffer] = useState('');
@@ -24,26 +26,46 @@ const MakeOfferPage = () => {
   const handleSubmit = async e => {
     e.preventDefault();
 
+    const numericOffer = parseFloat(offer);
+
     if (!offer || !message) {
       toast.error('Please provide both offer amount and message');
       return;
     }
 
+    if (
+      isNaN(numericOffer) ||
+      numericOffer < property.minPrice ||
+      numericOffer > property.maxPrice
+    ) {
+      toast.error(
+        `Offer must be between $${property.minPrice} and $${property.maxPrice}`
+      );
+      return;
+    }
+
     try {
       setLoading(true);
-      const res = await axiosSecure.post('/offers', {
+      const offerData = {
         propertyId: property._id,
-        userEmail: property.userEmail,
-        offerAmount: parseFloat(offer),
+        userEmail: user.email,
+        userName: user.displayName,
+        userImage: user.photoURL,
+        agentEmail: property.userEmail,
+        offerAmount: numericOffer,
         message,
         propertyTitle: property.title,
-      });
+        status: 'pending',
+        date: new Date().toISOString(),
+      };
+
+      const res = await axiosSecure.post('/offers', offerData);
 
       if (res.data?.insertedId) {
         toast.success('Offer submitted successfully!');
         navigate('/dashboard/wishlist');
       } else {
-        toast.error('Unexpected response. Offer not saved.');
+        toast.error('Unexpected error. Offer not saved.');
       }
     } catch (error) {
       console.error(error);
@@ -58,6 +80,7 @@ const MakeOfferPage = () => {
       <h1 className="text-4xl font-bold text-center mb-8">Make an Offer</h1>
 
       <div className="bg-white shadow-lg rounded-lg p-6 space-y-6">
+        {/* Property Details */}
         <div>
           <h2 className="text-2xl font-semibold">{property.title}</h2>
           <p className="text-gray-600 text-sm">{property.location}</p>
@@ -70,8 +93,9 @@ const MakeOfferPage = () => {
           </p>
         </div>
 
+        {/* Agent Info */}
         {property.agentName && (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 border p-3 rounded-md">
             <img
               src={property.agentImage}
               alt={property.agentName}
@@ -84,6 +108,7 @@ const MakeOfferPage = () => {
           </div>
         )}
 
+        {/* Offer Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block text-sm font-medium mb-1">
@@ -94,9 +119,8 @@ const MakeOfferPage = () => {
               value={offer}
               onChange={e => setOffer(e.target.value)}
               className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your offer amount"
+              placeholder={`Enter between $${property.minPrice} - $${property.maxPrice}`}
               required
-              min={1}
             />
           </div>
 

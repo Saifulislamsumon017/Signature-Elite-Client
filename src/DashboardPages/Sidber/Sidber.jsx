@@ -50,7 +50,7 @@ const Sidebar = () => {
       { label: 'My Profile', to: '/dashboard/profile', icon: AiOutlineUser },
       { label: 'Wishlist', to: '/dashboard/wishlist', icon: AiOutlineHeart },
       {
-        label: 'Property Bought',
+        label: 'My Property Bought',
         to: '/dashboard/property-bought',
         icon: AiOutlineShoppingCart,
       },
@@ -69,7 +69,7 @@ const Sidebar = () => {
         icon: AiOutlinePlus,
       },
       {
-        label: 'My Added Properties',
+        label: 'My Properties',
         to: '/dashboard/my-properties',
         icon: AiOutlineAppstore,
       },

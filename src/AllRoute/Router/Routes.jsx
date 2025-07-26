@@ -12,23 +12,24 @@ import PropertyDetailsPage from '@/Pages/AllProperties/PropertyDetailsPage';
 import PaymentPage from '@/Pages/PaymentPage/PaymentPage';
 import MakeOfferPage from '@/Pages/MakeOfferPage/MakeOfferPage';
 import WishlistPage from '@/DashboardPages/UserDashboard/WishlistPage';
-import PropertyBoughtPage from '@/DashboardPages/UserDashboard/PropertyBoughtPage ';
 import Profile from '@/DashboardPages/ProfilePage/Profile';
 import MyReviewsPage from '@/DashboardPages/UserDashboard/MyReviewsPage';
 import AgentProfilePage from '@/DashboardPages/AgentDashboard/AgentProfilePage';
 import AddPropertyPage from '@/DashboardPages/AgentDashboard/AddPropertyPage';
-import MyPropertiesPage from '@/DashboardPages/AgentDashboard/MyPropertiesPage';
-import PropertyUpdatePage from '@/DashboardPages/AgentDashboard/PropertyUpdatePage';
-import MySoldPropertiesPage from '@/DashboardPages/AgentDashboard/MySoldPropertiesPage';
-import RequestedOffersPage from '@/DashboardPages/AgentDashboard/RequestedOffersPage';
 import AgentRequestsPage from '@/DashboardPages/AgentDashboard/AgentRequestsPage';
 import AdminProfilePage from '@/DashboardPages/AdminDashboard/AdminProfilePage';
 import ManagePropertiesPage from '@/DashboardPages/AdminDashboard/ManagePropertiesPage';
 import ManageUsersPage from '@/DashboardPages/AdminDashboard/ManageUsersPage';
-import ManageReviewsPage from '@/DashboardPages/AdminDashboard/ManageReviewsPage';
 import AdvertisePropertyPage from '@/DashboardPages/AdminDashboard/AdvertisePropertyPage';
-import MyOffersPage from '@/DashboardPages/UserDashboard/MyOffersPage';
 import AgentOffersPage from '@/DashboardPages/AgentDashboard/AgentOffersPage';
+import MyOffersPage from '@/DashboardPages/UserDashboard/MyOffersPage';
+import PaymentSuccessPage from '@/Pages/PaymentPage/PaymentSuccessPage';
+import MyBoughtProperties from '@/DashboardPages/UserDashboard/MyBoughtProperties';
+import MySoldProperties from '@/DashboardPages/AgentDashboard/MySoldProperties';
+import RequestedProperties from '@/DashboardPages/AgentDashboard/RequestedProperties';
+import MyAddedPropertiesPage from '@/DashboardPages/AgentDashboard/MyAddedPropertiesPage';
+import UpdatePropertyPage from '@/DashboardPages/AgentDashboard/UpdatePropertyPage';
+import AdminManageReviewsPage from '@/DashboardPages/AdminDashboard/AdminManageReviewsPage';
 
 export const Routes = createBrowserRouter([
   {
@@ -82,9 +83,6 @@ export const Routes = createBrowserRouter([
     element: <DashboardLayout />,
     children: [
       {
-        index: true,
-      },
-      {
         path: 'profile',
         element: (
           <PrivateRoutes>
@@ -104,7 +102,7 @@ export const Routes = createBrowserRouter([
         path: 'property-bought',
         element: (
           <PrivateRoutes>
-            <PropertyBoughtPage />
+            <MyBoughtProperties />
           </PrivateRoutes>
         ),
       },
@@ -118,18 +116,27 @@ export const Routes = createBrowserRouter([
         ),
       },
       {
-        path: 'make-offer/:id',
+        path: 'my-offers',
         element: (
           <PrivateRoutes>
             <MyOffersPage />
           </PrivateRoutes>
         ),
       },
+
       {
         path: 'payment/:offerId',
         element: (
           <PrivateRoutes>
             <PaymentPage />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: 'payment-success',
+        element: (
+          <PrivateRoutes>
+            <PaymentSuccessPage />
           </PrivateRoutes>
         ),
       },
@@ -153,7 +160,7 @@ export const Routes = createBrowserRouter([
         path: 'my-properties',
         element: (
           <PrivateRoutes>
-            <MyPropertiesPage />
+            <MyAddedPropertiesPage />
           </PrivateRoutes>
         ),
       },
@@ -161,7 +168,7 @@ export const Routes = createBrowserRouter([
         path: 'update-property/:id',
         element: (
           <PrivateRoutes>
-            <PropertyUpdatePage />
+            <UpdatePropertyPage />
           </PrivateRoutes>
         ),
       },
@@ -169,7 +176,7 @@ export const Routes = createBrowserRouter([
         path: 'my-sold-properties',
         element: (
           <PrivateRoutes>
-            <MySoldPropertiesPage />
+            <MySoldProperties />
           </PrivateRoutes>
         ),
       },
@@ -177,7 +184,7 @@ export const Routes = createBrowserRouter([
         path: 'requested-properties',
         element: (
           <PrivateRoutes>
-            <RequestedOffersPage />
+            <RequestedProperties />
           </PrivateRoutes>
         ),
       },
@@ -224,7 +231,7 @@ export const Routes = createBrowserRouter([
         path: 'manage-reviews',
         element: (
           <PrivateRoutes>
-            <ManageReviewsPage />
+            <AdminManageReviewsPage />
           </PrivateRoutes>
         ),
       },

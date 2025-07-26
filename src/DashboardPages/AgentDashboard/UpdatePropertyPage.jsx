@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import useAuth from '@/hooks/useAuth';
-import Swal from 'sweetalert2';
 import useAxiosSecure from '@/hooks/useAxiosSecure';
+import Swal from 'sweetalert2';
 import ImageUploader from '@/SheardComponents/ImageUploader';
+import { useNavigate, useParams } from 'react-router';
 
 const UpdatePropertyPage = () => {
   const { id } = useParams();
-  const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
-  // Form state
   const [form, setForm] = useState({
     image: '',
     title: '',
@@ -25,88 +22,58 @@ const UpdatePropertyPage = () => {
     bathrooms: '',
   });
 
-  // Load property
-  const { data: property, isLoading } = useQuery({
-    queryKey: ['single-property', id],
-    queryFn: async () => {
-      const res = await axiosSecure.get(`/property/${id}`);
-      return res.data;
-    },
-    enabled: !!id,
-  });
-
   useEffect(() => {
-    if (property) {
-      setForm({
-        image: property.image || '',
-        title: property.title || '',
-        location: property.location || '',
-        minPrice: property.minPrice || '',
-        maxPrice: property.maxPrice || '',
-        facilities: property.facilities?.join(', ') || '',
-        bedrooms: property.bedrooms || '',
-        bathrooms: property.bathrooms || '',
-      });
-    }
-  }, [property]);
+    const fetchProperty = async () => {
+      try {
+        const res = await axiosSecure.get(`/property/${id}`);
+        setForm(res.data);
+      } catch (error) {
+        console.error('Failed to fetch property data:', error);
+        Swal.fire('Error', 'Failed to fetch property data.', 'error');
+      }
+    };
 
-  // Mutation for update
-  const updateMutation = useMutation({
-    mutationFn: async updatedData => {
-      await axiosSecure.patch(`/property/${id}`, updatedData);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['my-properties', user.email]);
-      Swal.fire('Updated!', 'Property updated successfully.', 'success');
-      navigate('/dashboard/my-properties');
-    },
-    onError: () => {
-      Swal.fire('Error', 'Failed to update property.', 'error');
-    },
-  });
+    fetchProperty();
+  }, [id, axiosSecure]);
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
+
     if (!form.title || !form.location) {
       Swal.fire('Error', 'Title and Location are required.', 'error');
       return;
     }
 
-    // Prepare facilities array
-    const facilitiesArray = form.facilities
-      .split(',')
-      .map(f => f.trim())
-      .filter(Boolean);
-
     const updatedData = {
       ...form,
-      facilities: facilitiesArray,
       minPrice: parseFloat(form.minPrice),
       maxPrice: parseFloat(form.maxPrice),
       bedrooms: parseInt(form.bedrooms),
       bathrooms: parseInt(form.bathrooms),
     };
 
-    updateMutation.mutate(updatedData);
+    try {
+      await axiosSecure.patch(`/properties/${id}`, updatedData);
+      Swal.fire('Updated!', 'Property updated successfully.', 'success');
+      navigate('/dashboard/my-properties');
+    } catch (error) {
+      console.error('Failed to update property:', error);
+      Swal.fire('Error', 'Failed to update property.', 'error');
+    }
   };
 
-  if (isLoading) return <div className="text-center p-10">Loading...</div>;
-  if (!property)
-    return <div className="text-center p-10">Property not found.</div>;
-
   return (
-    <section className="max-w-2xl mx-auto p-6 bg-white rounded shadow">
+    <div className="max-w-2xl mx-auto p-6 bg-white rounded shadow">
       <h2 className="text-2xl font-bold mb-4 text-center">Update Property</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <ImageUploader
           onUpload={url => setForm({ ...form, image: url })}
           type="property"
         />
-
         {form.image && (
           <img
             src={form.image}
-            alt="Preview"
+            alt="Property Preview"
             className="w-full h-48 object-cover rounded"
           />
         )}
@@ -213,7 +180,7 @@ const UpdatePropertyPage = () => {
           Update Property
         </button>
       </form>
-    </section>
+    </div>
   );
 };
 

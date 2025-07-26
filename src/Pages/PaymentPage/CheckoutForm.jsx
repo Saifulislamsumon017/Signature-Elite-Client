@@ -1,51 +1,79 @@
-import useAxiosSecure from '@/hooks/useAxiosSecure';
+import React, { useState } from 'react';
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import { useState } from 'react';
-import toast from 'react-hot-toast';
+import useAxiosSecure from '@/hooks/useAxiosSecure';
 
-const PaymentForm = ({ price }) => {
+const CheckoutForm = ({ offer, clientSecret, onPaymentSuccess }) => {
   const stripe = useStripe();
   const elements = useElements();
   const axiosSecure = useAxiosSecure();
-  const [loading, setLoading] = useState(false);
+  const [processing, setProcessing] = useState(false);
+  const [transactionId, setTransactionId] = useState('');
 
-  const handlePayment = async e => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    setLoading(true);
-
-    const { data } = await axiosSecure.post('/create-payment-intent', {
-      price,
-    });
-    const clientSecret = data.clientSecret;
+    if (!stripe || !elements) return;
 
     const card = elements.getElement(CardElement);
-    const paymentResult = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card,
-      },
+    setProcessing(true);
+
+    const { error, paymentMethod } = await stripe.createPaymentMethod({
+      type: 'card',
+      card,
     });
 
-    if (paymentResult.error) {
-      toast.error(paymentResult.error.message);
-    } else if (paymentResult.paymentIntent.status === 'succeeded') {
-      toast.success('Payment successful!');
+    if (error) {
+      console.error(error);
+      setProcessing(false);
+      return;
     }
 
-    setLoading(false);
+    const { paymentIntent, error: confirmError } =
+      await stripe.confirmCardPayment(clientSecret, {
+        payment_method: paymentMethod.id,
+      });
+
+    if (confirmError) {
+      console.error(confirmError);
+      setProcessing(false);
+      return;
+    }
+
+    if (paymentIntent.status === 'succeeded') {
+      setTransactionId(paymentIntent.id);
+
+      await axiosSecure.patch(`/offers/${offer._id}`, {
+        status: 'paid',
+        transactionId: paymentIntent.id,
+      });
+
+      onPaymentSuccess({
+        transactionId: paymentIntent.id,
+        offerAmount: offer.offerAmount,
+        propertyTitle: offer.propertyTitle,
+      });
+    }
+
+    setProcessing(false);
   };
 
   return (
-    <form onSubmit={handlePayment}>
-      <CardElement className="border p-2 rounded mb-4" />
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <CardElement className="border p-4 rounded-md" />
       <button
         type="submit"
-        disabled={!stripe || loading}
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        disabled={!stripe || processing}
+        className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
       >
-        {loading ? 'Processing...' : 'Pay Now'}
+        {processing ? 'Processing...' : 'Pay Now'}
       </button>
+
+      {transactionId && (
+        <p className="text-green-600 font-medium">
+          Payment successful! Transaction ID: {transactionId}
+        </p>
+      )}
     </form>
   );
 };
 
-export default PaymentForm;
+export default CheckoutForm;

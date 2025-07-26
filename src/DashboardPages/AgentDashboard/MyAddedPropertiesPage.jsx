@@ -5,13 +5,12 @@ import useAuth from '@/hooks/useAuth';
 import useAxiosSecure from '@/hooks/useAxiosSecure';
 import { useNavigate } from 'react-router';
 
-const MyPropertiesPage = () => {
+const MyAddedPropertiesPage = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  // Fetch my properties
   const { data: properties = [], isLoading } = useQuery({
     queryKey: ['my-properties', user.email],
     queryFn: async () => {
@@ -21,7 +20,6 @@ const MyPropertiesPage = () => {
     enabled: !!user?.email,
   });
 
-  // Mutation for deleting
   const deleteMutation = useMutation({
     mutationFn: async id => {
       await axiosSecure.delete(`/properties/${id}`);
@@ -31,7 +29,7 @@ const MyPropertiesPage = () => {
       Swal.fire('Deleted!', 'Property has been deleted.', 'success');
     },
     onError: () => {
-      Swal.fire('Error', 'Failed to delete property', 'error');
+      Swal.fire('Error', 'Failed to delete property.', 'error');
     },
   });
 
@@ -54,7 +52,7 @@ const MyPropertiesPage = () => {
   if (isLoading) return <div className="text-center p-10">Loading...</div>;
 
   return (
-    <section className="max-w-6xl mx-auto p-4">
+    <div className="max-w-6xl mx-auto p-4">
       <h2 className="text-3xl font-bold mb-6 text-center">
         My Added Properties
       </h2>
@@ -77,7 +75,10 @@ const MyPropertiesPage = () => {
             <p className="text-sm">Bedrooms: {property.bedrooms}</p>
             <p className="text-sm">Bathrooms: {property.bathrooms}</p>
             <p className="text-sm mt-2">
-              Facilities: {property.facilities?.join(', ') || 'N/A'}
+              Facilities:{' '}
+              {Array.isArray(property.facilities)
+                ? property.facilities.join(', ')
+                : 'N/A'}
             </p>
             <div className="flex items-center gap-2 mt-2">
               <img
@@ -123,8 +124,8 @@ const MyPropertiesPage = () => {
           </div>
         ))}
       </div>
-    </section>
+    </div>
   );
 };
 
-export default MyPropertiesPage;
+export default MyAddedPropertiesPage;
