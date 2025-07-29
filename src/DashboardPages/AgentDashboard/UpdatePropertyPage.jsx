@@ -53,12 +53,19 @@ const UpdatePropertyPage = () => {
     };
 
     try {
-      await axiosSecure.patch(`/properties/${id}`, updatedData);
+      await axiosSecure.put(`/properties/${id}`, updatedData);
       Swal.fire('Updated!', 'Property updated successfully.', 'success');
       navigate('/dashboard/my-properties');
     } catch (error) {
-      console.error('Failed to update property:', error);
-      Swal.fire('Error', 'Failed to update property.', 'error');
+      console.error(
+        'Failed to update property:',
+        error.response?.data || error.message
+      );
+      Swal.fire(
+        'Error',
+        error.response?.data?.message || 'Failed to update property.',
+        'error'
+      );
     }
   };
 

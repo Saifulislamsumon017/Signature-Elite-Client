@@ -28,20 +28,22 @@ const AllProperties = () => {
   };
 
   return (
-    <div className="px-4 md:px-10 py-6 space-y-6">
-      <h2 className="text-3xl font-bold">All Verified Properties</h2>
+    <div className="max-w-7xl mx-auto px-4 pt-20 sm:px-6 lg:px-8 py-10 space-y-8">
+      <h2 className="text-3xl md:text-4xl font-extrabold text-center text-gray-900 dark:text-white">
+        All Verified Properties
+      </h2>
 
-      {/* 🔍 Search & Sort Controls */}
+      {/* 🔍 Search & Sort */}
       <form
         onSubmit={handleSearch}
-        className="flex flex-col md:flex-row gap-4 md:items-center"
+        className="flex flex-col md:flex-row md:justify-center gap-4"
       >
         <input
           type="text"
           placeholder="Search by location"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="border p-2 rounded w-full md:w-60"
+          className="w-full md:w-64 px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <select
           value={sort}
@@ -49,25 +51,27 @@ const AllProperties = () => {
             setSort(e.target.value);
             refetch();
           }}
-          className="border p-2 rounded w-full md:w-40"
+          className="w-full md:w-48 px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          <option value="">Sort By Price</option>
+          <option value="">Sort by Price</option>
           <option value="asc">Low → High</option>
           <option value="desc">High → Low</option>
         </select>
         <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          className="w-full md:w-auto px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded transition duration-300"
         >
           Search
         </button>
       </form>
 
-      {/* 🏘️ Property Cards */}
+      {/* 🏘️ Property Grid */}
       {isLoading ? (
-        <p>Loading...</p>
+        <p className="text-center text-gray-500">Loading properties...</p>
+      ) : properties.length === 0 ? (
+        <p className="text-center text-gray-500">No properties found.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {properties.map(property => (
             <PropertyCard key={property._id} property={property} />
           ))}

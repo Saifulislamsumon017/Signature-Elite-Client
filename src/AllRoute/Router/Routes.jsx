@@ -16,20 +16,21 @@ import Profile from '@/DashboardPages/ProfilePage/Profile';
 import MyReviewsPage from '@/DashboardPages/UserDashboard/MyReviewsPage';
 import AgentProfilePage from '@/DashboardPages/AgentDashboard/AgentProfilePage';
 import AddPropertyPage from '@/DashboardPages/AgentDashboard/AddPropertyPage';
-import AgentRequestsPage from '@/DashboardPages/AgentDashboard/AgentRequestsPage';
 import AdminProfilePage from '@/DashboardPages/AdminDashboard/AdminProfilePage';
 import ManagePropertiesPage from '@/DashboardPages/AdminDashboard/ManagePropertiesPage';
 import ManageUsersPage from '@/DashboardPages/AdminDashboard/ManageUsersPage';
 import AdvertisePropertyPage from '@/DashboardPages/AdminDashboard/AdvertisePropertyPage';
-import AgentOffersPage from '@/DashboardPages/AgentDashboard/AgentOffersPage';
 import MyOffersPage from '@/DashboardPages/UserDashboard/MyOffersPage';
 import PaymentSuccessPage from '@/Pages/PaymentPage/PaymentSuccessPage';
-import MyBoughtProperties from '@/DashboardPages/UserDashboard/MyBoughtProperties';
 import MySoldProperties from '@/DashboardPages/AgentDashboard/MySoldProperties';
-import RequestedProperties from '@/DashboardPages/AgentDashboard/RequestedProperties';
 import MyAddedPropertiesPage from '@/DashboardPages/AgentDashboard/MyAddedPropertiesPage';
 import UpdatePropertyPage from '@/DashboardPages/AgentDashboard/UpdatePropertyPage';
-import AdminManageReviewsPage from '@/DashboardPages/AdminDashboard/AdminManageReviewsPage';
+import ManageReviewsPage from '@/DashboardPages/AdminDashboard/ManageReviewsPage';
+import PropertyBoughtPage from '@/DashboardPages/UserDashboard/PropertyBoughtPage';
+import RequestedOffersPage from '@/DashboardPages/AgentDashboard/RequestedOffersPage';
+import AgentRoute from '../DashBoardRoute/AgentRoute';
+import AdminRoute from '../DashBoardRoute/AdminRoute';
+import Forbidden from '@/Pages/Error/Forbidden';
 
 export const Routes = createBrowserRouter([
   {
@@ -43,14 +44,19 @@ export const Routes = createBrowserRouter([
       },
       {
         path: 'all-properties',
-        element: <AllProperties />,
+        element: (
+          <PrivateRoutes>
+            <AllProperties />,
+          </PrivateRoutes>
+        ),
       },
       {
         path: '/property/:id',
         element: (
-          // <PrivateRoutes>
-          <PropertyDetailsPage />
-          // </PrivateRoutes>
+          <PrivateRoutes>
+            <PropertyDetailsPage />
+            //{' '}
+          </PrivateRoutes>
         ),
       },
 
@@ -61,6 +67,11 @@ export const Routes = createBrowserRouter([
             <MakeOfferPage />
           </PrivateRoutes>
         ),
+      },
+
+      {
+        path: 'forbidden',
+        Component: Forbidden,
       },
     ],
   },
@@ -80,7 +91,11 @@ export const Routes = createBrowserRouter([
   },
   {
     path: '/dashboard',
-    element: <DashboardLayout />,
+    element: (
+      <PrivateRoutes>
+        <DashboardLayout />
+      </PrivateRoutes>
+    ),
     children: [
       {
         path: 'profile',
@@ -102,7 +117,7 @@ export const Routes = createBrowserRouter([
         path: 'property-bought',
         element: (
           <PrivateRoutes>
-            <MyBoughtProperties />
+            <PropertyBoughtPage />
           </PrivateRoutes>
         ),
       },
@@ -125,7 +140,7 @@ export const Routes = createBrowserRouter([
       },
 
       {
-        path: 'payment/:offerId',
+        path: 'payment/:id',
         element: (
           <PrivateRoutes>
             <PaymentPage />
@@ -151,55 +166,41 @@ export const Routes = createBrowserRouter([
       {
         path: 'add-property',
         element: (
-          <PrivateRoutes>
+          <AgentRoute>
             <AddPropertyPage />
-          </PrivateRoutes>
+          </AgentRoute>
         ),
       },
       {
         path: 'my-properties',
         element: (
-          <PrivateRoutes>
+          <AgentRoute>
             <MyAddedPropertiesPage />
-          </PrivateRoutes>
+          </AgentRoute>
         ),
       },
       {
         path: 'update-property/:id',
         element: (
-          <PrivateRoutes>
+          <AgentRoute>
             <UpdatePropertyPage />
-          </PrivateRoutes>
+          </AgentRoute>
         ),
       },
       {
         path: 'my-sold-properties',
         element: (
-          <PrivateRoutes>
+          <AgentRoute>
             <MySoldProperties />
-          </PrivateRoutes>
+          </AgentRoute>
         ),
       },
       {
         path: 'requested-properties',
         element: (
-          <PrivateRoutes>
-            <RequestedProperties />
-          </PrivateRoutes>
-        ),
-      },
-      {
-        path: 'agent-offers',
-        element: <AgentOffersPage />,
-        // Add private/role-based route guards as needed
-      },
-
-      {
-        path: 'agent-requests',
-        element: (
-          <PrivateRoutes>
-            <AgentRequestsPage />
-          </PrivateRoutes>
+          <AgentRoute>
+            <RequestedOffersPage />
+          </AgentRoute>
         ),
       },
 
@@ -214,33 +215,33 @@ export const Routes = createBrowserRouter([
       {
         path: 'manage-properties',
         element: (
-          <PrivateRoutes>
+          <AdminRoute>
             <ManagePropertiesPage />
-          </PrivateRoutes>
+          </AdminRoute>
         ),
       },
       {
         path: 'manage-users',
         element: (
-          <PrivateRoutes>
+          <AdminRoute>
             <ManageUsersPage />
-          </PrivateRoutes>
+          </AdminRoute>
         ),
       },
       {
         path: 'manage-reviews',
         element: (
-          <PrivateRoutes>
-            <AdminManageReviewsPage />
-          </PrivateRoutes>
+          <AdminRoute>
+            <ManageReviewsPage />
+          </AdminRoute>
         ),
       },
       {
         path: 'advertise-property',
         element: (
-          <PrivateRoutes>
+          <AdminRoute>
             <AdvertisePropertyPage />
-          </PrivateRoutes>
+          </AdminRoute>
         ),
       },
     ],

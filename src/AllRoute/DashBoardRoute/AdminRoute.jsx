@@ -6,7 +6,7 @@ import { Navigate } from 'react-router';
 
 const AdminRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  const { role, roleLoading } = useUserRole();
+  const [role, roleLoading] = useUserRole();
 
   if (loading || roleLoading) {
     return <LoadingSpinner />;

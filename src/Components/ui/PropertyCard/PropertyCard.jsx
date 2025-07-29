@@ -68,7 +68,7 @@ const PropertyCard = ({ property }) => {
 
         <button
           onClick={() => navigate(`/property/${_id}`)}
-          className="mt-4 w-full bg-lime-500 hover:bg-lime-600 text-white py-2 rounded-md font-semibold transition"
+          className="mt-4 w-full bg-blue-600 dark:bg-blue-400 text-white py-2 rounded-md font-semibold transition"
           type="button"
         >
           Details

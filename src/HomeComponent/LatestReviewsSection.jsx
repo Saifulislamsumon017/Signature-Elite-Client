@@ -3,7 +3,7 @@ import useAxiosSecure from '@/hooks/useAxiosSecure';
 import StarRating from '@/Components/ui/StarRating';
 import { formatDistanceToNow } from 'date-fns';
 
-const LatestReviewsSection = () => {
+const LatestReviewsdiv = () => {
   const axiosSecure = useAxiosSecure();
 
   const { data: reviews = [] } = useQuery({
@@ -14,24 +14,38 @@ const LatestReviewsSection = () => {
     },
   });
 
+  if (reviews.length === 0) {
+    return (
+      <p className="text-center py-20 text-gray-500 dark:text-gray-400 text-lg">
+        No reviews available yet.
+      </p>
+    );
+  }
+
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12">
-      <h2 className="text-3xl font-bold text-center mb-6">What Users Say</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="max-w-7xl mx-auto px-4 pt-20  dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 rounded-lg ">
+      <h2 className="text-4xl font-extrabold text-center mb-10 text-gray-900 dark:text-white relative inline-block">
+        What Users Say
+        <span className="block w-24 h-1 bg-blue-600 dark:bg-blue-400 mx-auto mt-2 rounded-full"></span>
+      </h2>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
         {reviews.map(review => (
-          <div
+          <article
             key={review._id}
-            className="bg-white rounded-xl shadow-md p-4 border border-gray-200"
+            className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 transition-transform hover:scale-105 duration-300"
           >
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex items-center gap-4 mb-4">
               <img
-                src={review.userPhoto || '/default-user.png'}
+                src={review.userImage || '/default-user.png'}
                 alt={review.userName}
-                className="w-10 h-10 rounded-full border"
+                className="w-12 h-12 rounded-full border border-gray-300 dark:border-gray-600 object-cover"
               />
               <div>
-                <p className="font-semibold">{review.userName}</p>
-                <p className="text-xs text-gray-500">
+                <p className="font-semibold text-gray-900 dark:text-gray-100">
+                  {review.userName}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
                   {formatDistanceToNow(new Date(review.createdAt), {
                     addSuffix: true,
                   })}
@@ -39,12 +53,14 @@ const LatestReviewsSection = () => {
                 <StarRating rating={review.rating} />
               </div>
             </div>
-            <p className="text-sm italic text-gray-600">"{review.comment}"</p>
-          </div>
+            <blockquote className="text-sm italic text-gray-700 dark:text-gray-300">
+              &ldquo;{review.comment}&rdquo;
+            </blockquote>
+          </article>
         ))}
       </div>
     </div>
   );
 };
 
-export default LatestReviewsSection;
+export default LatestReviewsdiv;

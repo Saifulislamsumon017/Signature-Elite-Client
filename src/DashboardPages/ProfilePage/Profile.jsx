@@ -6,7 +6,7 @@ import LoadingSpinner from '@/SheardComponents/LoadingSpinner';
 const Profile = () => {
   const { user } = useAuth();
   const [role, isRoleLoading] = useUserRole();
-  console.log(role);
+  // console.log(role);
   if (isRoleLoading) return <LoadingSpinner />;
   return (
     <div className="flex justify-center items-center h-screen">

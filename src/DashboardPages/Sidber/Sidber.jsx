@@ -83,11 +83,6 @@ const Sidebar = () => {
         to: '/dashboard/requested-properties',
         icon: AiOutlineCheckSquare,
       },
-      {
-        label: 'Agent Requests',
-        to: '/dashboard/agent-requests',
-        icon: AiOutlineSolution,
-      },
     ],
     admin: [
       { label: 'My Profile', to: '/dashboard/profile', icon: AiOutlineUser },

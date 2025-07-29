@@ -1,16 +1,17 @@
+// src/pages/MyOffersPage.jsx
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import useAxiosSecure from '@/hooks/useAxiosSecure';
 import useAuth from '@/hooks/useAuth';
-import { Tooltip } from 'react-tooltip'; // v5+ Tooltip
+import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
+import toast from 'react-hot-toast';
 
 const MyOffersPage = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
 
-  // Fetch offers
   const {
     data: offers = [],
     isLoading,
@@ -25,21 +26,26 @@ const MyOffersPage = () => {
     },
   });
 
-  // Mutation for updating offer status
   const { mutate } = useMutation({
     mutationFn: async ({ offerId, status }) => {
       const res = await axiosSecure.patch(`/offers/${offerId}`, { status });
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['myOffers', user?.email]); // Refetch offers
+      toast.success('Status updated!');
+      queryClient.invalidateQueries(['myOffers', user?.email]);
     },
     onError: err => {
       console.error('Error updating status:', err);
+      toast.error('Failed to update status.');
     },
   });
 
-  const handleStatusChange = (offerId, status) => {
+  const handleStatusChange = (offerId, status, currentStatus) => {
+    if (currentStatus === 'accepted' || currentStatus === 'rejected') {
+      toast('Status already finalized.');
+      return;
+    }
     mutate({ offerId, status });
   };
 
@@ -65,19 +71,9 @@ const MyOffersPage = () => {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="text-center py-10 font-medium">Loading offers...</div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className="text-center py-10 text-red-500">
-        <p>Error: {error.message || 'Something went wrong'}</p>
-      </div>
-    );
-  }
+  if (isLoading) return <div className="text-center py-10">Loading...</div>;
+  if (isError)
+    return <div className="text-red-500 text-center">{error.message}</div>;
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
@@ -140,21 +136,27 @@ const MyOffersPage = () => {
                         offer.status
                       )}`}
                     >
-                      {getStatusIcon(offer.status)}{' '}
-                      {offer.status.charAt(0).toUpperCase() +
-                        offer.status.slice(1)}
+                      {getStatusIcon(offer?.offerStatus)}{' '}
+                      {offer?.offerStatus?.charAt(0).toUpperCase() +
+                        offer?.offerStatus?.slice(1)}
                     </span>
                   </td>
                   <td className="py-3 px-4 space-x-2">
                     <button
-                      onClick={() => handleStatusChange(offer._id, 'accepted')}
-                      className="text-sm text-green-600 hover:text-green-800"
+                      disabled={offer?.status !== 'pending'}
+                      onClick={() =>
+                        handleStatusChange(offer._id, 'accepted', offer.status)
+                      }
+                      className="text-sm text-green-600 hover:text-green-800 disabled:opacity-40"
                     >
                       Accept
                     </button>
                     <button
-                      onClick={() => handleStatusChange(offer._id, 'rejected')}
-                      className="text-sm text-red-600 hover:text-red-800"
+                      disabled={offer.status !== 'pending'}
+                      onClick={() =>
+                        handleStatusChange(offer._id, 'rejected', offer.status)
+                      }
+                      className="text-sm text-red-600 hover:text-red-800 disabled:opacity-40"
                     >
                       Reject
                     </button>

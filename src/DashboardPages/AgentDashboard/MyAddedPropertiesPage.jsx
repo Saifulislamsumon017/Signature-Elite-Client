@@ -11,8 +11,9 @@ const MyAddedPropertiesPage = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  // Fetch properties added by agent
   const { data: properties = [], isLoading } = useQuery({
-    queryKey: ['my-properties', user.email],
+    queryKey: ['my-properties', user?.email],
     queryFn: async () => {
       const res = await axiosSecure.get(`/properties/agent/${user.email}`);
       return res.data;
@@ -20,12 +21,13 @@ const MyAddedPropertiesPage = () => {
     enabled: !!user?.email,
   });
 
+  // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: async id => {
       await axiosSecure.delete(`/properties/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['my-properties', user.email]);
+      queryClient.invalidateQueries(['my-properties', user?.email]);
       Swal.fire('Deleted!', 'Property has been deleted.', 'success');
     },
     onError: () => {
@@ -33,6 +35,7 @@ const MyAddedPropertiesPage = () => {
     },
   });
 
+  // Handle delete with confirmation
   const handleDelete = id => {
     Swal.fire({
       title: 'Are you sure?',
@@ -49,7 +52,8 @@ const MyAddedPropertiesPage = () => {
     });
   };
 
-  if (isLoading) return <div className="text-center p-10">Loading...</div>;
+  if (isLoading)
+    return <div className="text-center py-10">Loading properties...</div>;
 
   return (
     <div className="max-w-6xl mx-auto p-4">
@@ -68,18 +72,10 @@ const MyAddedPropertiesPage = () => {
               className="w-full h-48 object-cover rounded"
             />
             <h3 className="text-xl font-bold mt-3">{property.title}</h3>
-            <p className="text-gray-600">{property.location}</p>
-            <p className="text-sm">
-              Price: ${property.minPrice} - ${property.maxPrice}
+            <p className="text-gray-600 text-sm">
+              Location: {property.location}
             </p>
-            <p className="text-sm">Bedrooms: {property.bedrooms}</p>
-            <p className="text-sm">Bathrooms: {property.bathrooms}</p>
-            <p className="text-sm mt-2">
-              Facilities:{' '}
-              {Array.isArray(property.facilities)
-                ? property.facilities.join(', ')
-                : 'N/A'}
-            </p>
+
             <div className="flex items-center gap-2 mt-2">
               <img
                 src={property.agentImage}
@@ -88,10 +84,15 @@ const MyAddedPropertiesPage = () => {
               />
               <span className="text-sm">{property.agentName}</span>
             </div>
+
+            <p className="text-sm mt-2">
+              Price Range: ${property.minPrice} - ${property.maxPrice}
+            </p>
+
             <p className="mt-2 text-sm">
               Status:{' '}
               <span
-                className={`px-2 py-1 rounded ${
+                className={`px-2 py-1 rounded text-xs font-medium ${
                   property.verificationStatus === 'verified'
                     ? 'bg-green-100 text-green-700'
                     : property.verificationStatus === 'rejected'
@@ -99,7 +100,7 @@ const MyAddedPropertiesPage = () => {
                     : 'bg-yellow-100 text-yellow-700'
                 }`}
               >
-                {property.verificationStatus}
+                {property.verificationStatus || 'pending'}
               </span>
             </p>
 

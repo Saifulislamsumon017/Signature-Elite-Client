@@ -12,22 +12,12 @@ const Home = () => {
   const { data: advertisedProperties = [] } = useQuery({
     queryKey: ['advertised-properties'],
     queryFn: async () => {
-      console.log('Fetching /advertised-properties');
+      // console.log('Fetching /advertised-properties');
       const res = await axiosSecure.get('/advertised-properties');
-      console.log('Data:', res.data);
+      // console.log('Data:', res.data);
       return res.data;
     },
   });
-
-  // const { data: latestReviews = [] } = useQuery({
-  //   queryKey: ['latest-reviews'],
-  //   queryFn: async () => {
-  //     console.log('Fetching /latest-reviews');
-  //     const res = await axiosSecure.get('/latest-reviews');
-  //     console.log('Data:', res.data);
-  //     return res.data;
-  //   },
-  // });
 
   return (
     <>

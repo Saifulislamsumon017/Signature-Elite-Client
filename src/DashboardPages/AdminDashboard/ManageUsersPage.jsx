@@ -92,7 +92,7 @@ const ManageUsersPage = () => {
                   <td className="p-3">{idx + 1}</td>
                   <td className="p-3">
                     <img
-                      src={user.photo}
+                      src={user.photoURL}
                       alt="user"
                       className="h-10 w-10 rounded-full"
                     />

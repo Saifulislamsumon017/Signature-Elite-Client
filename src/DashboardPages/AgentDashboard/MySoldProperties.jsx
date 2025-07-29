@@ -1,52 +1,50 @@
-import React from 'react';
-import useAxiosSecure from '@/hooks/useAxiosSecure';
-import useAuth from '@/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
+import useAuth from '@/hooks/useAuth';
+import useAxiosSecure from '@/hooks/useAxiosSecure';
 
 const MySoldProperties = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
 
-  const { data: soldOffers = [], isLoading } = useQuery({
+  const { data: soldProperties = [], isLoading } = useQuery({
     queryKey: ['soldProperties', user?.email],
     enabled: !!user?.email,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/sold-properties?email=${user.email}`);
+      const res = await axiosSecure.get(`/agent/sold?email=${user.email}`);
       return res.data;
     },
   });
 
-  if (isLoading)
-    return <p className="text-center py-10">Loading sold properties...</p>;
-
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10">
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        My Sold Properties
-      </h1>
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-4">My Sold Properties</h2>
 
-      {soldOffers.length === 0 ? (
-        <p className="text-center text-gray-500">No sold properties yet.</p>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : soldProperties.length === 0 ? (
+        <p>No sold properties found.</p>
       ) : (
-        <div className="overflow-x-auto rounded shadow">
-          <table className="min-w-full bg-white">
-            <thead className="bg-gray-100 text-gray-700">
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border rounded">
+            <thead className="bg-gray-100">
               <tr>
-                <th className="py-3 px-4 text-left">#</th>
-                <th className="py-3 px-4 text-left">Property</th>
-                <th className="py-3 px-4 text-left">Buyer</th>
-                <th className="py-3 px-4 text-left">Amount</th>
-                <th className="py-3 px-4 text-left">Transaction ID</th>
+                <th className="p-3 text-left">#</th>
+                <th className="p-3 text-left">Property</th>
+                <th className="p-3 text-left">Location</th>
+                <th className="p-3 text-left">Buyer Email</th>
+                <th className="p-3 text-left">Buyer Name</th>
+                <th className="p-3 text-left">Sold Price</th>
               </tr>
             </thead>
-            <tbody className="divide-y">
-              {soldOffers.map((offer, index) => (
-                <tr key={offer._id} className="hover:bg-gray-50">
-                  <td className="py-3 px-4">{index + 1}</td>
-                  <td className="py-3 px-4">{offer.propertyTitle}</td>
-                  <td className="py-3 px-4">{offer.userEmail}</td>
-                  <td className="py-3 px-4">${offer.offerAmount}</td>
-                  <td className="py-3 px-4">{offer.transactionId}</td>
+            <tbody>
+              {soldProperties.map((offer, idx) => (
+                <tr key={offer._id} className="border-b">
+                  <td className="p-3">{idx + 1}</td>
+                  <td className="p-3">{offer.propertyTitle}</td>
+                  <td className="p-3">{offer.propertyLocation}</td>
+                  <td className="p-3">{offer.buyerEmail}</td>
+                  <td className="p-3">{offer.buyerName}</td>
+                  <td className="p-3">${offer.offerAmount}</td>
                 </tr>
               ))}
             </tbody>

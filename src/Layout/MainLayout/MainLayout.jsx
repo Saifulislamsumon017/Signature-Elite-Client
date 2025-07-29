@@ -1,3 +1,4 @@
+import Footer from '@/SheardComponents/Footer';
 import Navbar from '@/SheardComponents/Navbar';
 import React from 'react';
 import { Toaster } from 'react-hot-toast';
@@ -13,7 +14,9 @@ const MainLayout = () => {
         <Outlet />
         <Toaster />
       </main>
-      <footer></footer>
+      <footer>
+        <Footer />
+      </footer>
     </>
   );
 };
