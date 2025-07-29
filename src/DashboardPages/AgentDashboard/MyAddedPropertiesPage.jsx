@@ -11,7 +11,6 @@ const MyAddedPropertiesPage = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  // Fetch properties added by agent
   const { data: properties = [], isLoading } = useQuery({
     queryKey: ['my-properties', user?.email],
     queryFn: async () => {
@@ -21,7 +20,6 @@ const MyAddedPropertiesPage = () => {
     enabled: !!user?.email,
   });
 
-  // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: async id => {
       await axiosSecure.delete(`/properties/${id}`);
@@ -35,7 +33,6 @@ const MyAddedPropertiesPage = () => {
     },
   });
 
-  // Handle delete with confirmation
   const handleDelete = id => {
     Swal.fire({
       title: 'Are you sure?',
@@ -52,79 +49,91 @@ const MyAddedPropertiesPage = () => {
     });
   };
 
-  if (isLoading)
-    return <div className="text-center py-10">Loading properties...</div>;
+  if (isLoading) {
+    return (
+      <div className="text-center py-20 text-lg font-semibold">
+        Loading your properties...
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-6xl mx-auto p-4">
-      <h2 className="text-3xl font-bold mb-6 text-center">
+    <div className="max-w-7xl mx-auto px-4 py-10">
+      <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">
         My Added Properties
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {properties.map(property => (
-          <div
-            key={property._id}
-            className="border rounded-lg p-4 shadow hover:shadow-lg transition"
-          >
-            <img
-              src={property.image}
-              alt={property.title}
-              className="w-full h-48 object-cover rounded"
-            />
-            <h3 className="text-xl font-bold mt-3">{property.title}</h3>
-            <p className="text-gray-600 text-sm">
-              Location: {property.location}
-            </p>
 
-            <div className="flex items-center gap-2 mt-2">
+      {properties.length === 0 ? (
+        <p className="text-center text-gray-500">
+          You haven’t added any properties yet.
+        </p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {properties.map(property => (
+            <div
+              key={property._id}
+              className="bg-white border rounded-lg overflow-hidden shadow hover:shadow-lg transition"
+            >
               <img
-                src={property.agentImage}
-                alt={property.agentName}
-                className="w-8 h-8 rounded-full"
+                src={property.image}
+                alt={property.title}
+                className="w-full h-48 object-cover"
               />
-              <span className="text-sm">{property.agentName}</span>
+              <div className="p-4 space-y-2">
+                <h3 className="text-lg font-bold text-gray-800">
+                  {property.title}
+                </h3>
+                <p className="text-sm text-gray-600">📍 {property.location}</p>
+                <p className="text-sm text-gray-600">
+                  💰 ${property.minPrice} - ${property.maxPrice}
+                </p>
+
+                <div className="flex items-center gap-2 mt-1">
+                  <img
+                    src={property.agentImage}
+                    alt={property.agentName}
+                    className="w-7 h-7 rounded-full"
+                  />
+                  <span className="text-sm">{property.agentName}</span>
+                </div>
+
+                <div>
+                  <span
+                    className={`inline-block text-xs font-medium px-2 py-1 rounded ${
+                      property.verificationStatus === 'verified'
+                        ? 'bg-green-100 text-green-700'
+                        : property.verificationStatus === 'rejected'
+                        ? 'bg-red-100 text-red-700'
+                        : 'bg-yellow-100 text-yellow-700'
+                    }`}
+                  >
+                    {property.verificationStatus}
+                  </span>
+                </div>
+
+                <div className="flex gap-2 mt-4">
+                  {property.verificationStatus !== 'rejected' && (
+                    <button
+                      onClick={() =>
+                        navigate(`/dashboard/update-property/${property._id}`)
+                      }
+                      className="bg-indigo-600 text-white px-4 py-1.5 text-sm rounded hover:bg-indigo-700"
+                    >
+                      Update
+                    </button>
+                  )}
+                  <button
+                    onClick={() => handleDelete(property._id)}
+                    className="bg-red-600 text-white px-4 py-1.5 text-sm rounded hover:bg-red-700"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
             </div>
-
-            <p className="text-sm mt-2">
-              Price Range: ${property.minPrice} - ${property.maxPrice}
-            </p>
-
-            <p className="mt-2 text-sm">
-              Status:{' '}
-              <span
-                className={`px-2 py-1 rounded text-xs font-medium ${
-                  property.verificationStatus === 'verified'
-                    ? 'bg-green-100 text-green-700'
-                    : property.verificationStatus === 'rejected'
-                    ? 'bg-red-100 text-red-700'
-                    : 'bg-yellow-100 text-yellow-700'
-                }`}
-              >
-                {property.verificationStatus || 'pending'}
-              </span>
-            </p>
-
-            <div className="flex gap-2 mt-4">
-              {property.verificationStatus !== 'rejected' && (
-                <button
-                  onClick={() =>
-                    navigate(`/dashboard/update-property/${property._id}`)
-                  }
-                  className="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700"
-                >
-                  Update
-                </button>
-              )}
-              <button
-                onClick={() => handleDelete(property._id)}
-                className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

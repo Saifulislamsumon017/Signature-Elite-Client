@@ -14,53 +14,71 @@ const AdvertisePropertyPage = () => {
     },
   });
 
-  const { mutate: advertiseProperty } = useMutation({
+  const { mutate: advertiseProperty, isLoading: isMutating } = useMutation({
     mutationFn: async id => {
       const res = await axiosSecure.patch(`/admin/advertise/${id}`);
       return res.data;
     },
     onSuccess: () => {
-      toast.success('Property marked as advertised');
+      toast.success('✅ Property marked as advertised');
       queryClient.invalidateQueries(['advertise-list']);
+    },
+    onError: () => {
+      toast.error('❌ Failed to advertise property');
     },
   });
 
   return (
-    <section className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Advertise Properties</h2>
+    <div className="p-6 max-w-7xl mx-auto">
+      <h2 className="text-2xl font-bold mb-6 text-center">
+        Advertise Properties
+      </h2>
 
       {isLoading ? (
-        <p>Loading...</p>
+        <p className="text-center text-gray-600">Loading...</p>
       ) : properties.length === 0 ? (
-        <p>No verified properties available for advertisement.</p>
+        <p className="text-center text-gray-500">
+          No verified properties available for advertisement.
+        </p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {properties.map(property => (
             <div
               key={property._id}
-              className="border rounded-lg shadow p-4 bg-white"
+              className="border rounded-lg shadow p-4 bg-white flex flex-col"
             >
               <img
                 src={property.image}
                 alt={property.title}
                 className="w-full h-40 object-cover rounded"
+                loading="lazy"
               />
-              <h3 className="text-lg font-semibold mt-2">{property.title}</h3>
-              <p className="text-gray-600">
-                {property.description?.slice(0, 60)}...
+              <h3 className="text-lg font-semibold mt-4">{property.title}</h3>
+              <p className="text-gray-600 mt-1 flex-grow">
+                {property.description?.length > 60
+                  ? property.description.slice(0, 60) + '...'
+                  : property.description}
               </p>
-              <p className="font-medium text-green-600">${property.price}</p>
+
+              {/* ✅ Show price range */}
+              <p className="font-medium text-green-600 mt-2">
+                ${property.minPrice?.toLocaleString()} - $
+                {property.maxPrice?.toLocaleString()}
+              </p>
+
               <button
                 onClick={() => advertiseProperty(property._id)}
-                className="mt-3 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                disabled={isMutating}
+                className="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                aria-label={`Advertise property ${property.title}`}
               >
-                Advertise
+                {isMutating ? 'Advertising...' : 'Advertise'}
               </button>
             </div>
           ))}
         </div>
       )}
-    </section>
+    </div>
   );
 };
 

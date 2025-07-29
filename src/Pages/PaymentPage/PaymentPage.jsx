@@ -20,22 +20,40 @@ const PaymentPage = () => {
     enabled: !!id,
   });
 
-  if (isLoading) return <p className="p-6">Loading...</p>;
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-20 text-gray-500 dark:text-gray-300">
+        Loading payment details...
+      </div>
+    );
+  }
 
   return (
-    <div className="p-6 max-w-xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Complete Payment</h2>
+    <div className="max-w-2xl mx-auto px-4 py-10">
+      <h2 className="text-3xl font-bold mb-8 text-center text-gray-800 dark:text-white">
+        Complete Your Payment
+      </h2>
 
-      <div className="bg-white p-4 rounded shadow mb-6 space-y-2">
-        <p>
-          <strong>Property:</strong> {offer.propertyTitle}
-        </p>
-        <p>
-          <strong>Agent:</strong> {offer.agentName}
-        </p>
-        <p>
-          <strong>Offered Amount:</strong> ${offer.offerAmount}
-        </p>
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-8 space-y-3 border border-gray-200 dark:border-gray-700">
+        <div>
+          <p className="text-gray-700 dark:text-gray-300">
+            <span className="font-semibold">🏠 Property:</span>{' '}
+            {offer.propertyTitle}
+          </p>
+        </div>
+        <div>
+          <p className="text-gray-700 dark:text-gray-300">
+            <span className="font-semibold">🧑 Agent:</span> {offer.agentName}
+          </p>
+        </div>
+        <div>
+          <p className="text-gray-700 dark:text-gray-300">
+            <span className="font-semibold">💵 Offer Amount:</span>{' '}
+            <span className="text-green-600 dark:text-green-400 font-medium">
+              ${offer.offerAmount?.toLocaleString()}
+            </span>
+          </p>
+        </div>
       </div>
 
       <Elements stripe={stripePromise}>

@@ -16,35 +16,42 @@ const MySoldProperties = () => {
   });
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">My Sold Properties</h2>
+    <div className="px-4 py-8 max-w-7xl mx-auto">
+      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
+        My Sold Properties
+      </h2>
 
       {isLoading ? (
-        <p>Loading...</p>
+        <p className="text-center text-gray-500">Loading...</p>
       ) : soldProperties.length === 0 ? (
-        <p>No sold properties found.</p>
+        <p className="text-center text-gray-500">No sold properties found.</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border rounded">
-            <thead className="bg-gray-100">
+        <div className="overflow-x-auto rounded-lg shadow-md border">
+          <table className="min-w-[640px] w-full bg-white text-sm">
+            <thead className="bg-gray-100 text-gray-700">
               <tr>
-                <th className="p-3 text-left">#</th>
-                <th className="p-3 text-left">Property</th>
-                <th className="p-3 text-left">Location</th>
-                <th className="p-3 text-left">Buyer Email</th>
-                <th className="p-3 text-left">Buyer Name</th>
-                <th className="p-3 text-left">Sold Price</th>
+                <th className="px-4 py-3 text-left">#</th>
+                <th className="px-4 py-3 text-left">Property</th>
+                <th className="px-4 py-3 text-left">Location</th>
+                <th className="px-4 py-3 text-left">Buyer Email</th>
+                <th className="px-4 py-3 text-left">Buyer Name</th>
+                <th className="px-4 py-3 text-left">Sold Price</th>
               </tr>
             </thead>
             <tbody>
               {soldProperties.map((offer, idx) => (
-                <tr key={offer._id} className="border-b">
-                  <td className="p-3">{idx + 1}</td>
-                  <td className="p-3">{offer.propertyTitle}</td>
-                  <td className="p-3">{offer.propertyLocation}</td>
-                  <td className="p-3">{offer.buyerEmail}</td>
-                  <td className="p-3">{offer.buyerName}</td>
-                  <td className="p-3">${offer.offerAmount}</td>
+                <tr
+                  key={offer._id}
+                  className="border-t hover:bg-gray-50 transition"
+                >
+                  <td className="px-4 py-3">{idx + 1}</td>
+                  <td className="px-4 py-3">{offer.propertyTitle}</td>
+                  <td className="px-4 py-3">{offer.propertyLocation}</td>
+                  <td className="px-4 py-3">{offer.buyerEmail}</td>
+                  <td className="px-4 py-3">{offer.buyerName}</td>
+                  <td className="px-4 py-3 font-semibold text-green-700">
+                    ${offer.offerAmount}
+                  </td>
                 </tr>
               ))}
             </tbody>

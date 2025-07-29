@@ -37,63 +37,73 @@ const ManagePropertiesPage = () => {
     updateStatus.mutate({ id, status });
   };
 
-  if (isLoading) return <div className="text-center p-6">Loading...</div>;
+  if (isLoading)
+    return <div className="text-center p-6 text-gray-600">Loading...</div>;
 
   return (
-    <section className="max-w-6xl mx-auto p-4">
-      <h2 className="text-2xl font-bold text-center mb-6">Manage Properties</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="max-w-7xl mx-auto p-4">
+      <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">
+        Manage Properties
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {properties.map(property => (
-          <div key={property._id} className="border p-4 rounded shadow">
+          <div
+            key={property._id}
+            className="border rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition cursor-default"
+          >
             <img
               src={property.image}
               alt={property.title}
-              className="h-40 w-full object-cover rounded"
+              className="w-full h-48 object-cover"
             />
-            <h3 className="text-xl font-semibold mt-2">{property.title}</h3>
-            <p className="text-sm text-gray-600">{property.location}</p>
-            <p className="text-sm">
-              Agent: <span className="font-medium">{property.agentName}</span>
-            </p>
-            <p className="text-sm">
-              Price: ${property.minPrice} - ${property.maxPrice}
-            </p>
+            <div className="p-4">
+              <h3 className="text-xl font-semibold text-gray-900">
+                {property.title}
+              </h3>
+              <p className="text-gray-600 text-sm mt-1">{property.location}</p>
+              <p className="text-gray-700 text-sm mt-2">
+                Agent: <span className="font-medium">{property.agentName}</span>
+              </p>
+              <p className="text-gray-700 text-sm">
+                Price: ${property.minPrice} - ${property.maxPrice}
+              </p>
 
-            <p className="text-sm mt-2">
-              Status:{' '}
-              <span
-                className={`px-2 py-1 rounded text-xs ${
-                  property.verificationStatus === 'verified'
-                    ? 'bg-green-100 text-green-700'
-                    : property.verificationStatus === 'rejected'
-                    ? 'bg-red-100 text-red-700'
-                    : 'bg-yellow-100 text-yellow-700'
-                }`}
-              >
-                {property.verificationStatus}
-              </span>
-            </p>
+              <p className="mt-3">
+                Status:{' '}
+                <span
+                  className={`inline-block px-2 py-1 rounded text-xs font-semibold ${
+                    property.verificationStatus === 'verified'
+                      ? 'bg-green-100 text-green-700'
+                      : property.verificationStatus === 'rejected'
+                      ? 'bg-red-100 text-red-700'
+                      : 'bg-yellow-100 text-yellow-700'
+                  }`}
+                >
+                  {property.verificationStatus}
+                </span>
+              </p>
 
-            {property.verificationStatus === 'pending' && (
-              <div className="flex gap-2 mt-3">
-                <button
-                  onClick={() => handleStatusUpdate(property._id, 'verified')}
-                  className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
-                >
-                  Verify
-                </button>
-                <button
-                  onClick={() => handleStatusUpdate(property._id, 'rejected')}
-                  className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-                >
-                  Reject
-                </button>
-              </div>
-            )}
+              {property.verificationStatus === 'pending' && (
+                <div className="flex gap-3 mt-4">
+                  <button
+                    onClick={() => handleStatusUpdate(property._id, 'verified')}
+                    className="flex-1 bg-green-600 hover:bg-green-700 text-white rounded py-2 font-semibold transition"
+                  >
+                    Verify
+                  </button>
+                  <button
+                    onClick={() => handleStatusUpdate(property._id, 'rejected')}
+                    className="flex-1 bg-red-600 hover:bg-red-700 text-white rounded py-2 font-semibold transition"
+                  >
+                    Reject
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         ))}
       </div>
-    </section>
+    </div>
   );
 };
 

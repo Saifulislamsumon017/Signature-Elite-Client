@@ -66,41 +66,45 @@ const ManageUsersPage = () => {
     }
   };
 
-  if (isLoading) return <p className="text-center p-10">Loading...</p>;
+  if (isLoading)
+    return <p className="text-center p-10 text-gray-600">Loading...</p>;
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Manage Users</h2>
+    <div className="p-6 max-w-7xl mx-auto">
+      <h2 className="text-2xl font-bold mb-6 text-center">Manage Users</h2>
       {users.length === 0 ? (
-        <p>No users found.</p>
+        <p className="text-center text-gray-500">No users found.</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white rounded shadow">
+        <div className="overflow-x-auto rounded shadow border">
+          <table className="min-w-full bg-white divide-y divide-gray-200">
             <thead className="bg-gray-100">
               <tr className="text-left">
-                <th className="p-3">#</th>
-                <th className="p-3">Photo</th>
-                <th className="p-3">Name</th>
-                <th className="p-3">Email</th>
-                <th className="p-3">Role</th>
-                <th className="p-3">Actions</th>
+                <th className="p-3 whitespace-nowrap">#</th>
+                <th className="p-3 whitespace-nowrap">Photo</th>
+                <th className="p-3 whitespace-nowrap">Name</th>
+                <th className="p-3 whitespace-nowrap">Email</th>
+                <th className="p-3 whitespace-nowrap">Role</th>
+                <th className="p-3 whitespace-nowrap w-64">Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-gray-200">
               {users.map((user, idx) => (
-                <tr key={user._id} className="border-b">
-                  <td className="p-3">{idx + 1}</td>
-                  <td className="p-3">
+                <tr key={user._id} className="hover:bg-gray-50">
+                  <td className="p-3 whitespace-nowrap">{idx + 1}</td>
+                  <td className="p-3 whitespace-nowrap">
                     <img
                       src={user.photoURL}
-                      alt="user"
-                      className="h-10 w-10 rounded-full"
+                      alt={`${user.name}'s avatar`}
+                      className="h-10 w-10 rounded-full object-cover"
+                      loading="lazy"
                     />
                   </td>
-                  <td className="p-3">{user.name}</td>
-                  <td className="p-3">{user.email}</td>
-                  <td className="p-3 capitalize">{user.role}</td>
-                  <td className="p-3 flex flex-wrap gap-2 items-center">
+                  <td className="p-3 whitespace-nowrap">{user.name}</td>
+                  <td className="p-3 whitespace-nowrap">{user.email}</td>
+                  <td className="p-3 whitespace-nowrap capitalize">
+                    {user.role}
+                  </td>
+                  <td className="p-3 whitespace-normal flex flex-wrap gap-2 items-center">
                     {user.role !== 'fraud' &&
                       ['user', 'agent', 'admin']
                         .filter(r => r !== user.role)
@@ -108,9 +112,11 @@ const ManageUsersPage = () => {
                           <button
                             key={r}
                             onClick={() => handleRoleChange(user._id, r)}
-                            className="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded hover:bg-blue-200"
+                            className="flex items-center gap-1 text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            aria-label={`Make user ${r}`}
+                            type="button"
                           >
-                            <AiOutlineUserSwitch className="inline mr-1" />
+                            <AiOutlineUserSwitch />
                             Make {r}
                           </button>
                         ))}
@@ -118,18 +124,22 @@ const ManageUsersPage = () => {
                     {user.role === 'agent' && (
                       <button
                         onClick={() => handleMarkFraud(user._id, user.email)}
-                        className="text-sm bg-yellow-100 text-yellow-700 px-2 py-1 rounded hover:bg-yellow-200"
+                        className="flex items-center gap-1 text-sm bg-yellow-100 text-yellow-700 px-2 py-1 rounded hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                        aria-label="Mark user as fraud"
+                        type="button"
                       >
-                        <FaExclamationTriangle className="inline mr-1" />
+                        <FaExclamationTriangle />
                         Mark as Fraud
                       </button>
                     )}
 
                     <button
                       onClick={() => handleDelete(user._id)}
-                      className="text-sm bg-red-100 text-red-600 px-2 py-1 rounded hover:bg-red-200"
+                      className="flex items-center gap-1 text-sm bg-red-100 text-red-600 px-2 py-1 rounded hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-400"
+                      aria-label="Delete user"
+                      type="button"
                     >
-                      <FaTrash className="inline mr-1" />
+                      <FaTrash />
                       Delete
                     </button>
                   </td>

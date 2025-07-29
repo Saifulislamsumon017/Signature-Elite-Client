@@ -3,6 +3,22 @@ import useAxiosSecure from '@/hooks/useAxiosSecure';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
+const CARD_ELEMENT_OPTIONS = {
+  style: {
+    base: {
+      fontSize: '16px',
+      color: '#32325d',
+      fontFamily: 'Inter, sans-serif',
+      '::placeholder': {
+        color: '#a0aec0',
+      },
+    },
+    invalid: {
+      color: '#e53e3e',
+    },
+  },
+};
+
 const CheckoutForm = ({ offer }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -17,15 +33,15 @@ const CheckoutForm = ({ offer }) => {
     if (!stripe || !elements) return;
 
     setProcessing(true);
+    setError('');
+    setSuccess('');
+
     const card = elements.getElement(CardElement);
 
     try {
-      // Create payment intent
       const { data: clientSecretData } = await axiosSecure.post(
         '/create-payment-intent',
-        {
-          amount: offer.offerAmount,
-        }
+        { amount: offer.offerAmount }
       );
 
       const { paymentIntent, error: stripeError } =
@@ -45,36 +61,42 @@ const CheckoutForm = ({ offer }) => {
         return;
       }
 
-      // Save payment info to DB
       const paymentResult = await axiosSecure.patch(
         `/offers/pay/${offer._id}`,
-        {
-          transactionId: paymentIntent.id,
-        }
+        { transactionId: paymentIntent.id }
       );
 
       if (paymentResult.data.modifiedCount > 0) {
-        setSuccess('Payment successful!');
+        setSuccess('✅ Payment successful!');
         navigate('/dashboard/property-bought');
       }
     } catch (err) {
-      setError('Payment failed. Please try again.', err);
+      setError('Something went wrong. Please try again.');
+      console.error(err);
     }
 
     setProcessing(false);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <CardElement className="p-3 border rounded" />
-      {error && <p className="text-red-600">{error}</p>}
-      {success && <p className="text-green-600">{success}</p>}
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="bg-gray-50 dark:bg-gray-900 border dark:border-gray-700 rounded-lg px-4 py-5 shadow-sm">
+        <CardElement options={CARD_ELEMENT_OPTIONS} />
+      </div>
+
+      {error && (
+        <p className="text-red-500 text-sm font-medium -mt-4">{error}</p>
+      )}
+      {success && (
+        <p className="text-green-600 font-semibold text-sm -mt-4">{success}</p>
+      )}
+
       <button
         type="submit"
         disabled={!stripe || processing}
-        className="bg-indigo-600 text-white px-4 py-2 rounded disabled:opacity-50"
+        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded transition disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        {processing ? 'Processing...' : `Pay $${offer.offerAmount}`}
+        {processing ? 'Processing Payment...' : `Pay $${offer.offerAmount}`}
       </button>
     </form>
   );

@@ -15,8 +15,6 @@ const MakeOfferPage = () => {
   const property = state?.property;
   const [offerAmount, setOfferAmount] = useState('');
 
-  // console.log(property);
-
   if (!property) {
     return (
       <div className="text-center text-red-600 mt-10 font-semibold">
@@ -35,7 +33,6 @@ const MakeOfferPage = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-
     const numericOffer = parseFloat(offerAmount);
 
     if (
@@ -64,8 +61,6 @@ const MakeOfferPage = () => {
       offerDate: new Date().toISOString(),
     };
 
-    // console.log(offerData);
-
     try {
       const res = await axiosSecure.post('/offers', offerData);
       if (res.data.insertedId) {
@@ -81,105 +76,77 @@ const MakeOfferPage = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-10">
-      <h2 className="text-3xl font-bold text-center mb-8">Make an Offer</h2>
+    <div className="max-w-4xl mx-auto px-4 py-10">
+      <h2 className="text-3xl font-bold text-center mb-10 text-gray-800 dark:text-white">
+        Make an Offer
+      </h2>
 
-      {/* Offer Form */}
       <form
         onSubmit={handleSubmit}
-        className="space-y-5 bg-white p-6 shadow rounded-md"
+        className="bg-white dark:bg-gray-800 p-6 md:p-10 shadow-md rounded-lg space-y-6 border dark:border-gray-700"
       >
-        {/* Property Image */}
-        <div className="mb-4">
-          <img
-            src={property?.image}
-            alt={property.title}
-            className="w-full h-64 object-cover rounded shadow"
-            onError={e => {
-              e.target.onerror = null;
-              e.target.src =
-                'https://via.placeholder.com/400x250?text=No+Image';
-            }}
-          />
-        </div>
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <label className="label">Property Title</label>
-            <input
-              type="text"
-              value={property.title}
-              disabled
-              className="input input-bordered w-full"
-            />
-          </div>
+        {/* Image */}
+        <img
+          src={property.image}
+          alt={property.title}
+          onError={e => {
+            e.target.onerror = null;
+            e.target.src = 'https://via.placeholder.com/400x250?text=No+Image';
+          }}
+          className="w-full h-64 object-cover rounded-md border"
+        />
 
-          <div>
-            <label className="label">Location</label>
-            <input
-              type="text"
-              value={property.location}
-              disabled
-              className="input input-bordered w-full"
-            />
-          </div>
-
-          <div>
-            <label className="label">Agent Name</label>
-            <input
-              type="text"
-              value={property.agentName}
-              disabled
-              className="input input-bordered w-full"
-            />
-          </div>
-
-          <div>
-            <label className="label">Buyer Name</label>
-            <input
-              type="text"
-              value={user.displayName}
-              disabled
-              className="input input-bordered w-full"
-            />
-          </div>
-
-          <div>
-            <label className="label">Buyer Email</label>
-            <input
-              type="text"
-              value={user.email}
-              disabled
-              className="input input-bordered w-full"
-            />
-          </div>
-
-          <div>
-            <label className="label">Offer Date</label>
-            <input
-              type="text"
-              value={new Date().toLocaleDateString()}
-              disabled
-              className="input input-bordered w-full"
-            />
-          </div>
+        {/* Property Info */}
+        <div className="grid md:grid-cols-2 gap-6">
+          {[
+            ['Property Title', property.title],
+            ['Location', property.location],
+            ['Agent Name', property.agentName],
+            ['Buyer Name', user.displayName],
+            ['Buyer Email', user.email],
+            ['Offer Date', new Date().toLocaleDateString()],
+          ].map(([label, value], idx) => (
+            <div key={idx}>
+              <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">
+                {label}
+              </label>
+              <input
+                type="text"
+                value={value}
+                disabled
+                className="w-full border rounded px-4 py-2 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-white"
+              />
+            </div>
+          ))}
         </div>
 
+        {/* Offer Amount */}
         <div>
-          <label className="label">Offer Amount ($)</label>
+          <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">
+            Offer Amount ($)
+          </label>
           <input
             type="number"
             value={offerAmount}
             onChange={e => setOfferAmount(e.target.value)}
-            className="input input-bordered w-full"
             placeholder={`Between $${property.minPrice} - $${property.maxPrice}`}
             required
+            className="w-full border rounded px-4 py-2 focus:outline-blue-500 dark:bg-gray-700 dark:text-white"
           />
         </div>
 
-        <div className="text-right">
+        {/* Action Buttons */}
+        <div className="flex justify-end gap-4 pt-4">
+          <button
+            type="button"
+            onClick={() => navigate('/dashboard/wishlist')}
+            className="bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-white px-5 py-2 rounded hover:bg-gray-300 dark:hover:bg-gray-700 transition"
+          >
+            Cancel
+          </button>
           <button
             type="submit"
-            className="btn bg-green-600 text-white hover:bg-green-700"
+            className="bg-green-600 hover:bg-green-700 text-white font-medium px-6 py-2 rounded transition"
           >
             Submit Offer
           </button>

@@ -14,6 +14,7 @@ const UpdatePropertyPage = () => {
   const [form, setForm] = useState({
     image: '',
     title: '',
+    description: '',
     location: '',
     minPrice: '',
     maxPrice: '',
@@ -39,8 +40,12 @@ const UpdatePropertyPage = () => {
   const handleSubmit = async e => {
     e.preventDefault();
 
-    if (!form.title || !form.location) {
-      Swal.fire('Error', 'Title and Location are required.', 'error');
+    if (!form.title || !form.location || !form.description) {
+      Swal.fire(
+        'Error',
+        'Title, Description, and Location are required.',
+        'error'
+      );
       return;
     }
 
@@ -57,22 +62,22 @@ const UpdatePropertyPage = () => {
       Swal.fire('Updated!', 'Property updated successfully.', 'success');
       navigate('/dashboard/my-properties');
     } catch (error) {
-      console.error(
-        'Failed to update property:',
-        error.response?.data || error.message
-      );
-      Swal.fire(
-        'Error',
-        error.response?.data?.message || 'Failed to update property.',
-        'error'
-      );
+      console.error('Failed to update property:', error);
+      Swal.fire('Error', 'Failed to update property.', 'error');
     }
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded shadow">
-      <h2 className="text-2xl font-bold mb-4 text-center">Update Property</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="max-w-3xl mx-auto px-4 py-10">
+      <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">
+        Update Property
+      </h2>
+
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-6 rounded-lg shadow-lg space-y-6"
+      >
+        {/* Image Upload */}
         <ImageUploader
           onUpload={url => setForm({ ...form, image: url })}
           type="property"
@@ -81,108 +86,132 @@ const UpdatePropertyPage = () => {
           <img
             src={form.image}
             alt="Property Preview"
-            className="w-full h-48 object-cover rounded"
+            className="w-full h-52 object-cover rounded-md border"
           />
         )}
 
-        <div>
-          <label>Property Title</label>
-          <input
-            type="text"
-            className="border p-2 w-full rounded"
-            value={form.title}
-            onChange={e => setForm({ ...form, title: e.target.value })}
-            required
-          />
+        {/* Title & Location */}
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <label className="block mb-1 font-medium">Property Title</label>
+            <input
+              type="text"
+              className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={form.title}
+              onChange={e => setForm({ ...form, title: e.target.value })}
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 font-medium">Location</label>
+            <input
+              type="text"
+              className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={form.location}
+              onChange={e => setForm({ ...form, location: e.target.value })}
+              required
+            />
+          </div>
         </div>
 
+        {/* ✅ Description Field */}
         <div>
-          <label>Property Location</label>
-          <input
-            type="text"
-            className="border p-2 w-full rounded"
-            value={form.location}
-            onChange={e => setForm({ ...form, location: e.target.value })}
+          <label className="block mb-1 font-medium">Description</label>
+          <textarea
+            className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            rows={3}
+            value={form.description}
+            onChange={e => setForm({ ...form, description: e.target.value })}
+            placeholder="Write a short property description..."
             required
-          />
+          ></textarea>
         </div>
 
-        <div>
-          <label>Price Range</label>
-          <div className="flex gap-2">
+        {/* Price, Bedrooms, Bathrooms */}
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <label className="block mb-1 font-medium">Min Price ($)</label>
             <input
               type="number"
-              className="border p-2 w-full rounded"
-              placeholder="Min Price"
+              className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={form.minPrice}
               onChange={e => setForm({ ...form, minPrice: e.target.value })}
               required
             />
+          </div>
+
+          <div>
+            <label className="block mb-1 font-medium">Max Price ($)</label>
             <input
               type="number"
-              className="border p-2 w-full rounded"
-              placeholder="Max Price"
+              className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={form.maxPrice}
               onChange={e => setForm({ ...form, maxPrice: e.target.value })}
               required
             />
           </div>
-        </div>
 
-        <div>
-          <label>Facilities (comma-separated)</label>
-          <input
-            type="text"
-            className="border p-2 w-full rounded"
-            value={form.facilities}
-            onChange={e => setForm({ ...form, facilities: e.target.value })}
-          />
-        </div>
-
-        <div className="flex gap-2">
-          <div className="flex-1">
-            <label>Bedrooms</label>
+          <div>
+            <label className="block mb-1 font-medium">Bedrooms</label>
             <input
               type="number"
-              className="border p-2 w-full rounded"
+              className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={form.bedrooms}
               onChange={e => setForm({ ...form, bedrooms: e.target.value })}
             />
           </div>
-          <div className="flex-1">
-            <label>Bathrooms</label>
+
+          <div>
+            <label className="block mb-1 font-medium">Bathrooms</label>
             <input
               type="number"
-              className="border p-2 w-full rounded"
+              className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={form.bathrooms}
               onChange={e => setForm({ ...form, bathrooms: e.target.value })}
             />
           </div>
         </div>
 
+        {/* Facilities */}
         <div>
-          <label>Agent Name</label>
+          <label className="block mb-1 font-medium">
+            Facilities (comma-separated)
+          </label>
           <input
             type="text"
-            className="border p-2 w-full rounded bg-gray-100"
-            value={user.displayName}
-            readOnly
+            className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={form.facilities}
+            onChange={e => setForm({ ...form, facilities: e.target.value })}
           />
         </div>
 
-        <div>
-          <label>Agent Email</label>
-          <input
-            type="email"
-            className="border p-2 w-full rounded bg-gray-100"
-            value={user.email}
-            readOnly
-          />
+        {/* Agent Info */}
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <label className="block mb-1 font-medium">Agent Name</label>
+            <input
+              type="text"
+              value={user.displayName}
+              className="w-full px-4 py-2 rounded border border-gray-300 bg-gray-100"
+              readOnly
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium">Agent Email</label>
+            <input
+              type="email"
+              value={user.email}
+              className="w-full px-4 py-2 rounded border border-gray-300 bg-gray-100"
+              readOnly
+            />
+          </div>
         </div>
 
+        {/* Submit Button */}
         <button
           type="submit"
-          className="bg-lime-600 text-white px-4 py-2 rounded hover:bg-lime-700 w-full"
+          className="w-full py-2 rounded bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition"
         >
           Update Property
         </button>
