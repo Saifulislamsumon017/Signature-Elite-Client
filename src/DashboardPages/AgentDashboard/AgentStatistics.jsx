@@ -84,11 +84,6 @@ const AgentStatistics = () => {
 
   return (
     <div className="p-6">
-      {/* Page Title */}
-      <h2 className="text-3xl font-bold mb-10 text-gray-800 flex items-center gap-2">
-        📊 Agent Dashboard Statistics
-      </h2>
-
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
         {cards.map((card, idx) => (

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   AiOutlineMenu,
   AiOutlineClose,
@@ -17,6 +17,7 @@ import {
 } from 'react-icons/ai';
 import { GrLogout } from 'react-icons/gr';
 import { FcSettings } from 'react-icons/fc';
+import { HiSun, HiMoon } from 'react-icons/hi';
 
 import useAuth from '@/hooks/useAuth';
 import useUserRole from '@/hooks/useUserRole';
@@ -25,10 +26,23 @@ import logImage from '../../assets/Logo/Signature Elite Logo .png';
 import { Link, NavLink } from 'react-router';
 
 const Sidebar = () => {
-  const { user, signOutUser } = useAuth();
+  const { signOutUser } = useAuth();
   const [role, isRoleLoading] = useUserRole();
   const [isOpen, setIsOpen] = useState(false); // mobile menu
   const [collapsed, setCollapsed] = useState(false); // desktop collapse
+  const [darkMode, setDarkMode] = useState(
+    localStorage.getItem('theme') === 'dark'
+  );
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [darkMode]);
 
   if (isRoleLoading) return <LoadingSpinner />;
 
@@ -184,6 +198,19 @@ const Sidebar = () => {
 
         {/* Footer */}
         <div className="border-t dark:border-gray-700 p-4 space-y-2">
+          {/* Dark/Light Mode Toggle */}
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className="flex items-center gap-3 px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 w-full"
+            title={collapsed ? 'Toggle Theme' : undefined}
+          >
+            {darkMode ? <HiSun size={20} /> : <HiMoon size={20} />}
+            {!collapsed && (
+              <span className="font-medium">{darkMode ? 'Light' : 'Dark'}</span>
+            )}
+          </button>
+
+          {/* Profile */}
           <Link
             to={profileLink}
             className="flex items-center gap-3 px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300"
@@ -193,6 +220,8 @@ const Sidebar = () => {
             <FcSettings size={20} />
             {!collapsed && <span className="font-medium">Profile</span>}
           </Link>
+
+          {/* Logout */}
           <button
             onClick={signOutUser}
             className="w-full flex items-center gap-3 px-4 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded"

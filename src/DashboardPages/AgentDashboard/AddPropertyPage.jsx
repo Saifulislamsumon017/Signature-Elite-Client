@@ -23,7 +23,6 @@ const AddPropertyPage = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-
     const facilitiesArray = facilities
       .split(',')
       .map(f => f.trim())
@@ -62,13 +61,13 @@ const AddPropertyPage = () => {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
-      <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">
+      <h2 className="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-white">
         Add New Property
       </h2>
 
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-lg shadow-lg space-y-6"
+        className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg space-y-6 transition-colors duration-200"
       >
         {/* Image Upload */}
         <ImageUploader onUpload={setImage} type="property" />
@@ -76,28 +75,31 @@ const AddPropertyPage = () => {
           <img
             src={image}
             alt="Property Preview"
-            className="w-full h-52 object-cover rounded-md border"
+            className="w-full h-52 object-cover rounded-md border border-gray-300 dark:border-gray-700"
           />
         )}
 
         {/* Property Title and Location */}
         <div className="grid md:grid-cols-2 gap-4">
-          <div className="w-full">
-            <label className="block mb-1 font-medium">Property Title</label>
+          <div>
+            <label className="block mb-1 font-medium text-gray-800 dark:text-gray-200">
+              Property Title
+            </label>
             <input
               type="text"
-              className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 rounded border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
               value={title}
               onChange={e => setTitle(e.target.value)}
               required
             />
           </div>
-
-          <div className="w-full">
-            <label className="block mb-1 font-medium">Location</label>
+          <div>
+            <label className="block mb-1 font-medium text-gray-800 dark:text-gray-200">
+              Location
+            </label>
             <input
               type="text"
-              className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 rounded border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
               value={location}
               onChange={e => setLocation(e.target.value)}
               required
@@ -105,11 +107,13 @@ const AddPropertyPage = () => {
           </div>
         </div>
 
-        {/* ✅ Description Field */}
+        {/* Description */}
         <div>
-          <label className="block mb-1 font-medium">Description</label>
+          <label className="block mb-1 font-medium text-gray-800 dark:text-gray-200">
+            Description
+          </label>
           <textarea
-            className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 rounded border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
             rows={3}
             value={description}
             onChange={e => setDescription(e.target.value)}
@@ -120,43 +124,48 @@ const AddPropertyPage = () => {
 
         {/* Price, Bedrooms, Bathrooms */}
         <div className="grid md:grid-cols-2 gap-4">
-          <div className="w-full">
-            <label className="block mb-1 font-medium">Min Price ($)</label>
+          <div>
+            <label className="block mb-1 font-medium text-gray-800 dark:text-gray-200">
+              Min Price ($)
+            </label>
             <input
               type="number"
-              className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 rounded border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
               value={minPrice}
               onChange={e => setMinPrice(e.target.value)}
               required
             />
           </div>
-
-          <div className="w-full">
-            <label className="block mb-1 font-medium">Max Price ($)</label>
+          <div>
+            <label className="block mb-1 font-medium text-gray-800 dark:text-gray-200">
+              Max Price ($)
+            </label>
             <input
               type="number"
-              className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 rounded border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
               value={maxPrice}
               onChange={e => setMaxPrice(e.target.value)}
               required
             />
           </div>
-
-          <div className="w-full">
-            <label className="block mb-1 font-medium">Bedrooms</label>
+          <div>
+            <label className="block mb-1 font-medium text-gray-800 dark:text-gray-200">
+              Bedrooms
+            </label>
             <input
               type="number"
-              className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 rounded border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
               value={bedrooms}
               onChange={e => setBedrooms(e.target.value)}
             />
           </div>
-
-          <div className="w-full">
-            <label className="block mb-1 font-medium">Bathrooms</label>
+          <div>
+            <label className="block mb-1 font-medium text-gray-800 dark:text-gray-200">
+              Bathrooms
+            </label>
             <input
               type="number"
-              className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 rounded border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
               value={bathrooms}
               onChange={e => setBathrooms(e.target.value)}
             />
@@ -165,12 +174,12 @@ const AddPropertyPage = () => {
 
         {/* Facilities */}
         <div>
-          <label className="block mb-1 font-medium">
+          <label className="block mb-1 font-medium text-gray-800 dark:text-gray-200">
             Facilities (comma-separated)
           </label>
           <input
             type="text"
-            className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 rounded border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
             value={facilities}
             onChange={e => setFacilities(e.target.value)}
           />
@@ -178,22 +187,26 @@ const AddPropertyPage = () => {
 
         {/* Agent Name & Email */}
         <div className="grid md:grid-cols-2 gap-4">
-          <div className="w-full">
-            <label className="block mb-1 font-medium">Agent Name</label>
+          <div>
+            <label className="block mb-1 font-medium text-gray-800 dark:text-gray-200">
+              Agent Name
+            </label>
             <input
               type="text"
               value={user.displayName}
-              className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
               readOnly
+              className="w-full px-4 py-2 rounded border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
             />
           </div>
-          <div className="w-full">
-            <label className="block mb-1 font-medium">Agent Email</label>
+          <div>
+            <label className="block mb-1 font-medium text-gray-800 dark:text-gray-200">
+              Agent Email
+            </label>
             <input
               type="email"
               value={user.email}
-              className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
               readOnly
+              className="w-full px-4 py-2 rounded border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
             />
           </div>
         </div>
@@ -202,7 +215,7 @@ const AddPropertyPage = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-2 rounded bg-green-600 hover:bg-green-700 text-white font-semibold transition"
+          className="mt-4 w-full bg-blue-600 dark:bg-blue-400 text-white py-2 rounded-md font-semibold transition"
         >
           {loading ? 'Submitting...' : 'Add Property'}
         </button>
