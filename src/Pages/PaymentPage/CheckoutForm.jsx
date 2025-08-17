@@ -3,22 +3,6 @@ import useAxiosSecure from '@/hooks/useAxiosSecure';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
-const CARD_ELEMENT_OPTIONS = {
-  style: {
-    base: {
-      fontSize: '16px',
-      color: '#32325d',
-      fontFamily: 'Inter, sans-serif',
-      '::placeholder': {
-        color: '#a0aec0',
-      },
-    },
-    invalid: {
-      color: '#e53e3e',
-    },
-  },
-};
-
 const CheckoutForm = ({ offer }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -27,6 +11,23 @@ const CheckoutForm = ({ offer }) => {
   const [success, setSuccess] = useState('');
   const [processing, setProcessing] = useState(false);
   const navigate = useNavigate();
+
+  // Always light mode colors for CardElement
+  const CARD_ELEMENT_OPTIONS = {
+    style: {
+      base: {
+        fontSize: '16px',
+        fontFamily: 'Inter, sans-serif',
+        color: '#000', // Black text
+        '::placeholder': {
+          color: '#a0aec0',
+        },
+      },
+      invalid: {
+        color: '#e53e3e',
+      },
+    },
+  };
 
   const handleSubmit = async e => {
     e.preventDefault();

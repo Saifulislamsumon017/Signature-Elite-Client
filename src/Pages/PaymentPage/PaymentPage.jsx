@@ -22,7 +22,7 @@ const PaymentPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-20 text-gray-500 dark:text-gray-300">
+      <div className="flex items-center justify-center py-20 text-gray-500 dark:text-gray-400">
         Loading payment details...
       </div>
     );
@@ -30,7 +30,7 @@ const PaymentPage = () => {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-10">
-      <h2 className="text-3xl font-bold mb-8 text-center text-gray-800 dark:text-white">
+      <h2 className="text-3xl font-bold mb-8 text-center text-gray-800 dark:text-gray-100">
         Complete Your Payment
       </h2>
 
@@ -56,9 +56,11 @@ const PaymentPage = () => {
         </div>
       </div>
 
-      <Elements stripe={stripePromise}>
-        <CheckoutForm offer={offer} />
-      </Elements>
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+        <Elements stripe={stripePromise}>
+          <CheckoutForm offer={offer} />
+        </Elements>
+      </div>
     </div>
   );
 };
