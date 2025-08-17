@@ -8,6 +8,7 @@ import {
   FaPalette,
   FaSyncAlt,
 } from 'react-icons/fa';
+import { Link } from 'react-router';
 
 const teamMembers = [
   {
@@ -85,8 +86,9 @@ const About = () => {
 
         {/* Team Section */}
         <div className="space-y-8">
-          <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white">
+          <h2 className="text-4xl font-extrabold text-center mb-10 text-gray-900 dark:text-white relative inline-block">
             Meet Our Team
+            <span className="block w-24 h-1 bg-blue-600 dark:bg-blue-400 mx-auto mt-2 rounded-full"></span>
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
             {teamMembers.map(member => (
@@ -111,7 +113,7 @@ const About = () => {
         </div>
 
         {/* CTA Section */}
-        <div className="text-center py-12 bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-gray-800 dark:to-gray-900 rounded-3xl shadow-xl">
+        <div className="text-center py-12 bg-gradient-to-r from-white to-white dark:from-gray-800 dark:to-gray-900 rounded-3xl shadow-xl">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
             Ready to Explore Properties?
           </h2>
@@ -119,12 +121,12 @@ const About = () => {
             Join thousands of satisfied users and find your dream property
             today!
           </p>
-          <a
-            href="/properties"
+          <Link
+            to="/all-properties"
             className="inline-block px-8 py-3 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-full transition"
           >
             Browse Properties
-          </a>
+          </Link>
         </div>
       </div>
     </div>
