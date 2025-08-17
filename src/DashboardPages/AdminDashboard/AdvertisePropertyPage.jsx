@@ -30,14 +30,16 @@ const AdvertisePropertyPage = () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center">
+      <h2 className="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">
         Advertise Properties
       </h2>
 
       {isLoading ? (
-        <p className="text-center text-gray-600">Loading...</p>
+        <p className="text-center text-gray-600 dark:text-gray-300">
+          Loading...
+        </p>
       ) : properties.length === 0 ? (
-        <p className="text-center text-gray-500">
+        <p className="text-center text-gray-500 dark:text-gray-400">
           No verified properties available for advertisement.
         </p>
       ) : (
@@ -45,7 +47,7 @@ const AdvertisePropertyPage = () => {
           {properties.map(property => (
             <div
               key={property._id}
-              className="border rounded-lg shadow p-4 bg-white flex flex-col"
+              className="border rounded-lg shadow p-4 bg-white dark:bg-gray-800 flex flex-col transition hover:shadow-lg"
             >
               <img
                 src={property.image}
@@ -53,15 +55,16 @@ const AdvertisePropertyPage = () => {
                 className="w-full h-40 object-cover rounded"
                 loading="lazy"
               />
-              <h3 className="text-lg font-semibold mt-4">{property.title}</h3>
-              <p className="text-gray-600 mt-1 flex-grow">
+              <h3 className="text-lg font-semibold mt-4 text-gray-800 dark:text-gray-100">
+                {property.title}
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300 mt-1 flex-grow">
                 {property.description?.length > 60
                   ? property.description.slice(0, 60) + '...'
                   : property.description}
               </p>
 
-              {/* ✅ Show price range */}
-              <p className="font-medium text-green-600 mt-2">
+              <p className="font-medium text-green-600 dark:text-green-400 mt-2">
                 ${property.minPrice?.toLocaleString()} - $
                 {property.maxPrice?.toLocaleString()}
               </p>
@@ -69,7 +72,7 @@ const AdvertisePropertyPage = () => {
               <button
                 onClick={() => advertiseProperty(property._id)}
                 disabled={isMutating}
-                className="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                className="mt-4 bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed transition"
                 aria-label={`Advertise property ${property.title}`}
               >
                 {isMutating ? 'Advertising...' : 'Advertise'}

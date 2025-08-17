@@ -67,18 +67,26 @@ const ManageUsersPage = () => {
   };
 
   if (isLoading)
-    return <p className="text-center p-10 text-gray-600">Loading...</p>;
+    return (
+      <p className="text-center p-10 text-gray-600 dark:text-gray-300">
+        Loading...
+      </p>
+    );
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center">Manage Users</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">
+        Manage Users
+      </h2>
       {users.length === 0 ? (
-        <p className="text-center text-gray-500">No users found.</p>
+        <p className="text-center text-gray-500 dark:text-gray-400">
+          No users found.
+        </p>
       ) : (
-        <div className="overflow-x-auto rounded shadow border">
-          <table className="min-w-full bg-white divide-y divide-gray-200">
-            <thead className="bg-gray-100">
-              <tr className="text-left">
+        <div className="overflow-x-auto rounded shadow border bg-white dark:bg-gray-800">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-100 dark:bg-gray-700">
+              <tr className="text-left text-gray-700 dark:text-gray-200">
                 <th className="p-3 whitespace-nowrap">#</th>
                 <th className="p-3 whitespace-nowrap">Photo</th>
                 <th className="p-3 whitespace-nowrap">Name</th>
@@ -87,10 +95,15 @@ const ManageUsersPage = () => {
                 <th className="p-3 whitespace-nowrap w-64">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
               {users.map((user, idx) => (
-                <tr key={user._id} className="hover:bg-gray-50">
-                  <td className="p-3 whitespace-nowrap">{idx + 1}</td>
+                <tr
+                  key={user._id}
+                  className="hover:bg-gray-50 dark:hover:bg-gray-700"
+                >
+                  <td className="p-3 whitespace-nowrap text-gray-800 dark:text-gray-200">
+                    {idx + 1}
+                  </td>
                   <td className="p-3 whitespace-nowrap">
                     <img
                       src={user.photoURL}
@@ -99,9 +112,13 @@ const ManageUsersPage = () => {
                       loading="lazy"
                     />
                   </td>
-                  <td className="p-3 whitespace-nowrap">{user.name}</td>
-                  <td className="p-3 whitespace-nowrap">{user.email}</td>
-                  <td className="p-3 whitespace-nowrap capitalize">
+                  <td className="p-3 whitespace-nowrap text-gray-800 dark:text-gray-200">
+                    {user.name}
+                  </td>
+                  <td className="p-3 whitespace-nowrap text-gray-800 dark:text-gray-200">
+                    {user.email}
+                  </td>
+                  <td className="p-3 whitespace-nowrap capitalize text-gray-800 dark:text-gray-200">
                     {user.role}
                   </td>
                   <td className="p-3 whitespace-normal flex flex-wrap gap-2 items-center">
@@ -112,7 +129,7 @@ const ManageUsersPage = () => {
                           <button
                             key={r}
                             onClick={() => handleRoleChange(user._id, r)}
-                            className="flex items-center gap-1 text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            className="flex items-center gap-1 text-sm bg-blue-100 text-blue-700 dark:bg-blue-600 dark:text-blue-100 px-2 py-1 rounded hover:bg-blue-200 dark:hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400"
                             aria-label={`Make user ${r}`}
                             type="button"
                           >
@@ -124,7 +141,7 @@ const ManageUsersPage = () => {
                     {user.role === 'agent' && (
                       <button
                         onClick={() => handleMarkFraud(user._id, user.email)}
-                        className="flex items-center gap-1 text-sm bg-yellow-100 text-yellow-700 px-2 py-1 rounded hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                        className="flex items-center gap-1 text-sm bg-yellow-100 text-yellow-700 dark:bg-yellow-600 dark:text-yellow-100 px-2 py-1 rounded hover:bg-yellow-200 dark:hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-400"
                         aria-label="Mark user as fraud"
                         type="button"
                       >
@@ -135,7 +152,7 @@ const ManageUsersPage = () => {
 
                     <button
                       onClick={() => handleDelete(user._id)}
-                      className="flex items-center gap-1 text-sm bg-red-100 text-red-600 px-2 py-1 rounded hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-400"
+                      className="flex items-center gap-1 text-sm bg-red-100 text-red-600 dark:bg-red-600 dark:text-red-100 px-2 py-1 rounded hover:bg-red-200 dark:hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-400"
                       aria-label="Delete user"
                       type="button"
                     >

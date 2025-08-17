@@ -1,12 +1,6 @@
+import React from 'react';
 import useAxiosSecure from '@/hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
-import React from 'react';
-import { FaUserAlt } from 'react-icons/fa';
-import { BsFillHouseDoorFill } from 'react-icons/bs';
-import { MdReviews } from 'react-icons/md';
-import { RiTeamFill } from 'react-icons/ri';
-import { GiReceiveMoney } from 'react-icons/gi';
-
 import {
   BarChart,
   Bar,
@@ -17,8 +11,13 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from 'recharts';
+import { FaUserAlt } from 'react-icons/fa';
+import { BsFillHouseDoorFill } from 'react-icons/bs';
+import { MdReviews } from 'react-icons/md';
+import { RiTeamFill } from 'react-icons/ri';
+import { GiReceiveMoney } from 'react-icons/gi';
 
-// custom triangle shape
+// custom triangle shape for bars
 const getPath = (x, y, width, height) => {
   return `M${x},${y + height}
     C${x + width / 3},${y + height} ${x + width / 2},${y + height / 3} ${
@@ -29,11 +28,9 @@ const getPath = (x, y, width, height) => {
   },${y + height}
     Z`;
 };
-
-const TriangleBar = props => {
-  const { fill, x, y, width, height } = props;
-  return <path d={getPath(x, y, width, height)} stroke="none" fill={fill} />;
-};
+const TriangleBar = ({ fill, x, y, width, height }) => (
+  <path d={getPath(x, y, width, height)} stroke="none" fill={fill} />
+);
 
 const AdminStatistics = () => {
   const axiosSecure = useAxiosSecure();
@@ -46,14 +43,7 @@ const AdminStatistics = () => {
     },
   });
 
-  const chartData = [
-    { name: 'Users', value: stats.totalUsers || 0, color: '#3B82F6' },
-    { name: 'Agents', value: stats.totalAgents || 0, color: '#8B5CF6' },
-    { name: 'Properties', value: stats.totalProperties || 0, color: '#10B981' },
-    { name: 'Reviews', value: stats.totalReviews || 0, color: '#F59E0B' },
-    { name: 'Sold', value: stats.soldProperties || 0, color: '#EF4444' },
-  ];
-
+  // Cards data
   const cards = [
     {
       title: 'Total Users',
@@ -87,20 +77,33 @@ const AdminStatistics = () => {
     },
   ];
 
+  // Main chart data
+  const chartData = [
+    { name: 'Users', value: stats.totalUsers || 0, color: '#3B82F6' },
+    { name: 'Agents', value: stats.totalAgents || 0, color: '#8B5CF6' },
+    { name: 'Properties', value: stats.totalProperties || 0, color: '#10B981' },
+    { name: 'Reviews', value: stats.totalReviews || 0, color: '#F59E0B' },
+    { name: 'Sold', value: stats.soldProperties || 0, color: '#EF4444' },
+  ];
+
+  // // Example monthly trends (replace with real API data if available)
+  // const monthlyTrends = stats.monthlySales || [
+  //   { month: 'Jan', sold: 5 },
+  //   { month: 'Feb', sold: 8 },
+  //   { month: 'Mar', sold: 4 },
+  //   { month: 'Apr', sold: 10 },
+  //   { month: 'May', sold: 6 },
+  //   { month: 'Jun', sold: 12 },
+  // ];
+
   return (
     <div className="p-6">
-      {/* Page Title */}
-      <h2 className="text-3xl font-bold mb-10 text-gray-800 flex items-center gap-2">
-        📊 Admin Dashboard Statistics
-      </h2>
-
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-12">
         {cards.map((card, idx) => (
           <div
             key={idx}
-            className={`relative p-6 rounded-2xl shadow-md text-white bg-gradient-to-r ${card.bg} 
-            transform hover:scale-[1.05] transition-all duration-300 flex flex-col justify-between`}
+            className={`relative p-6 rounded-2xl shadow-md text-white bg-gradient-to-r ${card.bg} transform hover:scale-[1.05] transition-all duration-300 flex flex-col justify-between`}
           >
             <div className="absolute -top-5 left-5 bg-white/20 p-3 rounded-xl shadow-lg">
               {card.icon}
@@ -113,8 +116,8 @@ const AdminStatistics = () => {
         ))}
       </div>
 
-      {/* Stylish Triangle Chart */}
-      <div className="bg-white p-8 rounded-2xl shadow-lg">
+      {/* Platform Insights Chart */}
+      <div className="bg-white p-8 rounded-2xl shadow-lg mb-12">
         <h3 className="text-2xl font-semibold mb-6 text-gray-800">
           📈 Platform Insights
         </h3>
@@ -127,6 +130,7 @@ const AdminStatistics = () => {
             <XAxis dataKey="name" tick={{ fill: '#374151', fontWeight: 500 }} />
             <YAxis tick={{ fill: '#374151' }} allowDecimals={false} />
             <Tooltip
+              formatter={value => new Intl.NumberFormat().format(value)}
               contentStyle={{
                 backgroundColor: 'white',
                 borderRadius: '12px',
@@ -138,6 +142,7 @@ const AdminStatistics = () => {
               dataKey="value"
               shape={<TriangleBar />}
               label={{ position: 'top', fontWeight: 'bold' }}
+              isAnimationActive={true}
             >
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.color} />
@@ -146,6 +151,40 @@ const AdminStatistics = () => {
           </BarChart>
         </ResponsiveContainer>
       </div>
+
+      {/* Monthly Sold Properties Trend */}
+      {/* <div className="bg-white p-8 rounded-2xl shadow-lg">
+        <h3 className="text-2xl font-semibold mb-6 text-gray-800">
+          📊 Monthly Sold Properties
+        </h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart
+            data={monthlyTrends}
+            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+            <XAxis
+              dataKey="month"
+              tick={{ fill: '#374151', fontWeight: 500 }}
+            />
+            <YAxis allowDecimals={false} tick={{ fill: '#374151' }} />
+            <Tooltip
+              formatter={value => new Intl.NumberFormat().format(value)}
+              contentStyle={{
+                backgroundColor: 'white',
+                borderRadius: '12px',
+                border: '1px solid #E5E7EB',
+                boxShadow: '0px 4px 10px rgba(0,0,0,0.1)',
+              }}
+            />
+            <Bar
+              dataKey="sold"
+              fill="#10B981"
+              label={{ position: 'top', fontWeight: 'bold' }}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      </div> */}
     </div>
   );
 };

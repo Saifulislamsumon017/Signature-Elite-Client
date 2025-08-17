@@ -38,18 +38,23 @@ const ManagePropertiesPage = () => {
   };
 
   if (isLoading)
-    return <div className="text-center p-6 text-gray-600">Loading...</div>;
+    return (
+      <div className="text-center p-6 text-gray-600 dark:text-gray-300">
+        Loading...
+      </div>
+    );
 
   return (
     <div className="max-w-7xl mx-auto p-4">
-      <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">
+      <h2 className="text-3xl font-bold text-center mb-8 text-gray-800 dark:text-gray-100">
         Manage Properties
       </h2>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {properties.map(property => (
           <div
             key={property._id}
-            className="border rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition cursor-default"
+            className="border rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition cursor-default bg-white dark:bg-gray-800"
           >
             <img
               src={property.image}
@@ -57,14 +62,16 @@ const ManagePropertiesPage = () => {
               className="w-full h-48 object-cover"
             />
             <div className="p-4">
-              <h3 className="text-xl font-semibold text-gray-900">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                 {property.title}
               </h3>
-              <p className="text-gray-600 text-sm mt-1">{property.location}</p>
-              <p className="text-gray-700 text-sm mt-2">
+              <p className="text-gray-600 text-sm mt-1 dark:text-gray-300">
+                {property.location}
+              </p>
+              <p className="text-gray-700 text-sm mt-2 dark:text-gray-200">
                 Agent: <span className="font-medium">{property.agentName}</span>
               </p>
-              <p className="text-gray-700 text-sm">
+              <p className="text-gray-700 text-sm dark:text-gray-200">
                 Price: ${property.minPrice} - ${property.maxPrice}
               </p>
 
@@ -73,10 +80,10 @@ const ManagePropertiesPage = () => {
                 <span
                   className={`inline-block px-2 py-1 rounded text-xs font-semibold ${
                     property.verificationStatus === 'verified'
-                      ? 'bg-green-100 text-green-700'
+                      ? 'bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200'
                       : property.verificationStatus === 'rejected'
-                      ? 'bg-red-100 text-red-700'
-                      : 'bg-yellow-100 text-yellow-700'
+                      ? 'bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-200'
+                      : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-800 dark:text-yellow-200'
                   }`}
                 >
                   {property.verificationStatus}
@@ -87,13 +94,13 @@ const ManagePropertiesPage = () => {
                 <div className="flex gap-3 mt-4">
                   <button
                     onClick={() => handleStatusUpdate(property._id, 'verified')}
-                    className="flex-1 bg-green-600 hover:bg-green-700 text-white rounded py-2 font-semibold transition"
+                    className="flex-1 bg-green-600 hover:bg-green-700 text-white dark:bg-green-500 dark:hover:bg-green-600 rounded py-2 font-semibold transition"
                   >
                     Verify
                   </button>
                   <button
                     onClick={() => handleStatusUpdate(property._id, 'rejected')}
-                    className="flex-1 bg-red-600 hover:bg-red-700 text-white rounded py-2 font-semibold transition"
+                    className="flex-1 bg-red-600 hover:bg-red-700 text-white dark:bg-red-500 dark:hover:bg-red-600 rounded py-2 font-semibold transition"
                   >
                     Reject
                   </button>

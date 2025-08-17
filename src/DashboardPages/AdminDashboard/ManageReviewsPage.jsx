@@ -40,16 +40,22 @@ const ManageReviewsPage = () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center">Manage Reviews</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">
+        Manage Reviews
+      </h2>
 
       {isLoading ? (
-        <p className="text-center text-gray-600">Loading reviews...</p>
+        <p className="text-center text-gray-600 dark:text-gray-300">
+          Loading reviews...
+        </p>
       ) : reviews.length === 0 ? (
-        <p className="text-center text-gray-500">No reviews found.</p>
+        <p className="text-center text-gray-500 dark:text-gray-400">
+          No reviews found.
+        </p>
       ) : (
-        <div className="overflow-x-auto rounded shadow border">
-          <table className="min-w-full bg-white divide-y divide-gray-200">
-            <thead className="bg-gray-100 text-left">
+        <div className="overflow-x-auto rounded shadow border bg-white dark:bg-gray-800">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-100 dark:bg-gray-700 text-left text-gray-700 dark:text-gray-200">
               <tr>
                 <th className="p-3 whitespace-nowrap">#</th>
                 <th className="p-3 whitespace-nowrap">User</th>
@@ -59,10 +65,15 @@ const ManageReviewsPage = () => {
                 <th className="p-3 whitespace-nowrap">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
               {reviews.map((review, idx) => (
-                <tr key={review._id} className="hover:bg-gray-50">
-                  <td className="p-3 whitespace-nowrap">{idx + 1}</td>
+                <tr
+                  key={review._id}
+                  className="hover:bg-gray-50 dark:hover:bg-gray-700"
+                >
+                  <td className="p-3 whitespace-nowrap text-gray-800 dark:text-gray-200">
+                    {idx + 1}
+                  </td>
                   <td className="p-3 flex items-center gap-3 whitespace-nowrap">
                     <img
                       src={review.userImage}
@@ -71,23 +82,29 @@ const ManageReviewsPage = () => {
                       loading="lazy"
                     />
                     <div className="truncate max-w-[150px]">
-                      <p className="font-medium truncate">{review.userName}</p>
-                      <p className="text-xs text-gray-500 truncate">
+                      <p className="font-medium truncate text-gray-800 dark:text-gray-200">
+                        {review.userName}
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                         {review.userEmail}
                       </p>
                     </div>
                   </td>
                   <td className="p-3 max-w-xs">
-                    <p className="text-gray-800 truncate">{review.comment}</p>
+                    <p className="text-gray-800 dark:text-gray-200 truncate">
+                      {review.comment}
+                    </p>
                   </td>
-                  <td className="p-3 whitespace-nowrap">{review.rating}/5</td>
-                  <td className="p-3 whitespace-nowrap text-sm text-gray-500">
+                  <td className="p-3 whitespace-nowrap text-gray-800 dark:text-gray-200">
+                    {review.rating}/5
+                  </td>
+                  <td className="p-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {new Date(review.createdAt).toLocaleDateString()}
                   </td>
                   <td className="p-3 whitespace-nowrap">
                     <button
                       onClick={() => handleDelete(review._id)}
-                      className="flex items-center gap-1 bg-red-100 text-red-600 px-3 py-1 rounded hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-400"
+                      className="flex items-center gap-1 bg-red-100 text-red-600 dark:bg-red-600 dark:text-red-100 px-3 py-1 rounded hover:bg-red-200 dark:hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-400"
                       aria-label={`Delete review by ${review.userName}`}
                       type="button"
                     >
