@@ -36,32 +36,25 @@ const WishlistPage = () => {
     },
   });
 
-  // Handler: remove from wishlist
-  const handleRemove = id => {
-    removeMutation.mutate(id);
-  };
-
-  // Handler: go to make offer page
-  const handleMakeOffer = item => {
+  const handleRemove = id => removeMutation.mutate(id);
+  const handleMakeOffer = item =>
     navigate('/make-offer', { state: { property: item } });
-  };
 
-  if (isLoading) {
+  if (isLoading)
     return (
-      <p className="text-center mt-10 font-semibold text-lg">
+      <p className="text-center mt-10 font-semibold text-lg text-gray-800 dark:text-gray-200">
         Loading wishlist...
       </p>
     );
-  }
-
-  // console.log(wishlist);
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
-      <h1 className="text-4xl font-bold mb-6 text-center">My Wishlist</h1>
+      <h1 className="text-4xl font-bold mb-6 text-center text-gray-900 dark:text-white">
+        My Wishlist
+      </h1>
 
       {wishlist.length === 0 ? (
-        <p className="text-center text-gray-600">
+        <p className="text-center text-gray-600 dark:text-gray-400">
           No properties in your wishlist.
         </p>
       ) : (
@@ -69,7 +62,7 @@ const WishlistPage = () => {
           {wishlist.map(item => (
             <div
               key={item._id}
-              className="bg-white shadow rounded-lg overflow-hidden"
+              className="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden transition-all duration-200 hover:shadow-lg"
             >
               <img
                 src={item.image}
@@ -77,13 +70,17 @@ const WishlistPage = () => {
                 className="w-full h-48 object-cover"
               />
               <div className="p-4">
-                <h2 className="text-xl font-semibold mb-1">{item.title}</h2>
-                <p className="text-gray-600 text-sm mb-1">{item.location}</p>
-                <p className="text-sm mb-1">
+                <h2 className="text-xl font-semibold mb-1 text-gray-900 dark:text-white">
+                  {item.title}
+                </h2>
+                <p className="text-gray-600 dark:text-gray-300 text-sm mb-1">
+                  {item.location}
+                </p>
+                <p className="text-sm mb-1 text-gray-700 dark:text-gray-300">
                   Price: ${item.minPrice?.toLocaleString()} - $
                   {item.maxPrice?.toLocaleString()}
                 </p>
-                <p className="text-sm mb-2">
+                <p className="text-sm mb-2 text-gray-700 dark:text-gray-300">
                   Agent: <span className="font-semibold">{item.agentName}</span>
                 </p>
                 <div className="flex items-center gap-2 mb-4">
@@ -92,20 +89,20 @@ const WishlistPage = () => {
                     alt={item.agentName}
                     className="w-8 h-8 rounded-full object-cover"
                   />
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
                     {item.verificationStatus}
                   </span>
                 </div>
                 <div className="flex gap-3">
                   <button
                     onClick={() => handleMakeOffer(item)}
-                    className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded"
+                    className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded transition-colors duration-200"
                   >
                     Make an Offer
                   </button>
                   <button
                     onClick={() => handleRemove(item._id)}
-                    className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded"
+                    className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded transition-colors duration-200"
                   >
                     Remove
                   </button>

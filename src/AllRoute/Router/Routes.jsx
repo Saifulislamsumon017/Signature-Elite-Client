@@ -32,6 +32,8 @@ import AgentRoute from '../DashBoardRoute/AgentRoute';
 import AdminRoute from '../DashBoardRoute/AdminRoute';
 import Forbidden from '@/Pages/Error/Forbidden';
 import Statistics from '@/DashboardPages/Statisticspage/Statistics';
+import About from '@/Pages/About/About';
+import Contact from '@/Pages/Contact/Contact';
 
 export const Routes = createBrowserRouter([
   {
@@ -56,7 +58,6 @@ export const Routes = createBrowserRouter([
         element: (
           <PrivateRoutes>
             <PropertyDetailsPage />
-            //{' '}
           </PrivateRoutes>
         ),
       },
@@ -73,6 +74,14 @@ export const Routes = createBrowserRouter([
       {
         path: 'forbidden',
         Component: Forbidden,
+      },
+      {
+        path: 'about',
+        Component: About,
+      },
+      {
+        path: 'contact',
+        Component: Contact,
       },
     ],
   },

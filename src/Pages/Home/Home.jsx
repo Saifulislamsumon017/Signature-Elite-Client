@@ -1,7 +1,11 @@
 import AdvertisementSection from '@/HomeComponent/AdvertisementSection';
 import Banner from '@/HomeComponent/Banner';
 import FeaturedAgentsSection from '@/HomeComponent/FeaturedAgentsSection';
+import HowItWorksSection from '@/HomeComponent/HowItWorksSection';
 import LatestReviewsSection from '@/HomeComponent/LatestReviewsSection';
+import NeighborhoodHighlightsSection from '@/HomeComponent/NeighborhoodHighlightsSection';
+import PropertyTypesSection from '@/HomeComponent/PropertyTypesSection';
+
 import WhyChooseUsSection from '@/HomeComponent/WhyChooseUsSection';
 import useAxiosSecure from '@/hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
@@ -26,6 +30,9 @@ const Home = () => {
       <LatestReviewsSection />
       <FeaturedAgentsSection />
       <WhyChooseUsSection />
+      <PropertyTypesSection />
+      <HowItWorksSection />
+      <NeighborhoodHighlightsSection />
     </>
   );
 };

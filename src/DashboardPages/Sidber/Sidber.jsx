@@ -35,16 +35,15 @@ const Sidebar = () => {
   const toggleMenu = () => setIsOpen(!isOpen);
   const toggleCollapse = () => setCollapsed(!collapsed);
 
-  // Classes for active/normal links
+  // Active and normal link styles
   const activeClass =
-    'bg-blue-100 text-blue-700 font-semibold rounded px-3 py-2 flex items-center gap-3';
+    'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-semibold rounded px-3 py-2 flex items-center gap-3';
   const normalClass =
-    'hover:bg-gray-200 rounded px-3 py-2 flex items-center gap-3';
+    'hover:bg-gray-200 dark:hover:bg-gray-700 rounded px-3 py-2 flex items-center gap-3 text-gray-700 dark:text-gray-300';
 
-  // All roles will use this:
-  const profileLink = '/dashboard/profile'; // Profile link for all roles
+  const profileLink = '/dashboard/profile';
 
-  // Sidebar menus with icons
+  // Sidebar menu items per role
   const menus = {
     user: [
       { label: 'My Profile', to: '/dashboard/profile', icon: AiOutlineUser },
@@ -112,16 +111,19 @@ const Sidebar = () => {
   return (
     <>
       {/* Mobile Header */}
-      <div className="bg-white border-b shadow-md md:hidden flex justify-between items-center p-4">
+      <div className="bg-white dark:bg-gray-900 border-b dark:border-gray-700 shadow-md md:hidden flex justify-between items-center p-4">
         <Link to="/" className="flex items-center gap-2 font-bold text-xl">
           <img
             src={logImage}
             alt="Logo"
             className="h-12 w-12 rounded-full shadow"
           />
-          <h1>Signature Elite</h1>
+          <h1 className="text-gray-900 dark:text-white">Signature Elite</h1>
         </Link>
-        <button onClick={toggleMenu} className="text-gray-700">
+        <button
+          onClick={toggleMenu}
+          className="text-gray-700 dark:text-gray-300"
+        >
           {isOpen ? <AiOutlineClose size={24} /> : <AiOutlineMenu size={24} />}
         </button>
       </div>
@@ -130,12 +132,12 @@ const Sidebar = () => {
       <div
         className={`fixed inset-y-0 left-0 z-40 ${
           collapsed ? 'w-20' : 'w-64'
-        } bg-gray-50 border-r transform ${
+        } bg-white dark:bg-gray-900 border-r dark:border-gray-700 transform ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         } md:translate-x-0 transition-all duration-300 ease-in-out flex flex-col justify-between`}
       >
         {/* Logo & Collapse Button */}
-        <div className="p-4 flex items-center justify-between border-b">
+        <div className="p-4 flex items-center justify-between border-b dark:border-gray-700">
           <Link
             to="/"
             className="flex items-center gap-2 font-bold text-xl overflow-hidden"
@@ -145,11 +147,13 @@ const Sidebar = () => {
               alt="Logo"
               className="h-10 w-10 rounded-full shadow"
             />
-            {!collapsed && <h1>Signature Elite</h1>}
+            {!collapsed && (
+              <h1 className="text-gray-900 dark:text-white">Signature Elite</h1>
+            )}
           </Link>
           <button
             onClick={toggleCollapse}
-            className="hidden md:block text-gray-600 hover:text-blue-600"
+            className="hidden md:block text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
             title={collapsed ? 'Expand' : 'Collapse'}
           >
             {collapsed ? (
@@ -179,10 +183,10 @@ const Sidebar = () => {
         </nav>
 
         {/* Footer */}
-        <div className="border-t p-4 space-y-2">
+        <div className="border-t dark:border-gray-700 p-4 space-y-2">
           <Link
             to={profileLink}
-            className="flex items-center gap-3 px-4 py-2 hover:bg-gray-200 rounded"
+            className="flex items-center gap-3 px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300"
             onClick={() => setIsOpen(false)}
             title={collapsed ? 'Profile' : undefined}
           >
@@ -191,7 +195,7 @@ const Sidebar = () => {
           </Link>
           <button
             onClick={signOutUser}
-            className="w-full flex items-center gap-3 px-4 py-2 text-red-600 hover:bg-red-50 rounded"
+            className="w-full flex items-center gap-3 px-4 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded"
             title={collapsed ? 'Logout' : undefined}
           >
             <GrLogout size={18} />
