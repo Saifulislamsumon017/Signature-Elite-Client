@@ -31,6 +31,7 @@ import RequestedOffersPage from '@/DashboardPages/AgentDashboard/RequestedOffers
 import AgentRoute from '../DashBoardRoute/AgentRoute';
 import AdminRoute from '../DashBoardRoute/AdminRoute';
 import Forbidden from '@/Pages/Error/Forbidden';
+import Statistics from '@/DashboardPages/Statisticspage/Statistics';
 
 export const Routes = createBrowserRouter([
   {
@@ -97,6 +98,14 @@ export const Routes = createBrowserRouter([
       </PrivateRoutes>
     ),
     children: [
+      {
+        index: true,
+        element: (
+          <PrivateRoutes>
+            <Statistics />
+          </PrivateRoutes>
+        ),
+      },
       {
         path: 'profile',
         element: (

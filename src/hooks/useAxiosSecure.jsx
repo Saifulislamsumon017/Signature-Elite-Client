@@ -8,7 +8,7 @@ const useAxiosSecure = () => {
 
   const axiosSecure = useMemo(() => {
     const instance = axios.create({
-      baseURL: 'http://localhost:3000', // 🔁 Update this to match your backend
+      baseURL: `https://signature-elite-server.vercel.app`, // 🔁 Update this to match your backend
     });
 
     // ✅ Request Interceptor

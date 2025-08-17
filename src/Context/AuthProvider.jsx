@@ -49,7 +49,9 @@ const AuthProvider = ({ children }) => {
 
       if (currentUser?.email) {
         axios
-          .post('http://localhost:3000/jwt', { email: currentUser.email })
+          .post('https://signature-elite-server.vercel.app/jwt', {
+            email: currentUser.email,
+          })
           .then(res => {
             localStorage.setItem('access-token', res.data.token);
           })
