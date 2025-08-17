@@ -51,7 +51,7 @@ const MyAddedPropertiesPage = () => {
 
   if (isLoading) {
     return (
-      <div className="text-center py-20 text-lg font-semibold">
+      <div className="text-center py-20 text-lg font-semibold text-gray-800 dark:text-gray-200">
         Loading your properties...
       </div>
     );
@@ -59,12 +59,12 @@ const MyAddedPropertiesPage = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
-      <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">
+      <h2 className="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-white">
         My Added Properties
       </h2>
 
       {properties.length === 0 ? (
-        <p className="text-center text-gray-500">
+        <p className="text-center text-gray-600 dark:text-gray-400">
           You haven’t added any properties yet.
         </p>
       ) : (
@@ -72,7 +72,7 @@ const MyAddedPropertiesPage = () => {
           {properties.map(property => (
             <div
               key={property._id}
-              className="bg-white border rounded-lg overflow-hidden shadow hover:shadow-lg transition"
+              className="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-lg overflow-hidden shadow hover:shadow-lg transition"
             >
               <img
                 src={property.image}
@@ -80,11 +80,13 @@ const MyAddedPropertiesPage = () => {
                 className="w-full h-48 object-cover"
               />
               <div className="p-4 space-y-2">
-                <h3 className="text-lg font-bold text-gray-800">
+                <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">
                   {property.title}
                 </h3>
-                <p className="text-sm text-gray-600">📍 {property.location}</p>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  📍 {property.location}
+                </p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   💰 ${property.minPrice} - ${property.maxPrice}
                 </p>
 
@@ -94,37 +96,39 @@ const MyAddedPropertiesPage = () => {
                     alt={property.agentName}
                     className="w-7 h-7 rounded-full"
                   />
-                  <span className="text-sm">{property.agentName}</span>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">
+                    {property.agentName}
+                  </span>
                 </div>
 
                 <div>
                   <span
                     className={`inline-block text-xs font-medium px-2 py-1 rounded ${
                       property.verificationStatus === 'verified'
-                        ? 'bg-green-100 text-green-700'
+                        ? 'bg-green-100 text-green-700 dark:bg-green-700 dark:text-green-100'
                         : property.verificationStatus === 'rejected'
-                        ? 'bg-red-100 text-red-700'
-                        : 'bg-yellow-100 text-yellow-700'
+                        ? 'bg-red-100 text-red-700 dark:bg-red-700 dark:text-red-100'
+                        : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-700 dark:text-yellow-100'
                     }`}
                   >
                     {property.verificationStatus}
                   </span>
                 </div>
 
-                <div className="flex gap-2 mt-4">
+                <div className="flex flex-wrap gap-2 mt-4">
                   {property.verificationStatus !== 'rejected' && (
                     <button
                       onClick={() =>
                         navigate(`/dashboard/update-property/${property._id}`)
                       }
-                      className="bg-indigo-600 text-white px-4 py-1.5 text-sm rounded hover:bg-indigo-700"
+                      className="bg-indigo-600 dark:bg-indigo-500 text-white px-4 py-1.5 text-sm rounded hover:bg-indigo-700 dark:hover:bg-indigo-600 transition"
                     >
                       Update
                     </button>
                   )}
                   <button
                     onClick={() => handleDelete(property._id)}
-                    className="bg-red-600 text-white px-4 py-1.5 text-sm rounded hover:bg-red-700"
+                    className="bg-red-600 dark:bg-red-500 text-white px-4 py-1.5 text-sm rounded hover:bg-red-700 dark:hover:bg-red-600 transition"
                   >
                     Delete
                   </button>
